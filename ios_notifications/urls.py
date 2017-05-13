@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'', include('notification.urls'), namespace='notification'),
+    # url(r'', include('notification.urls'), namespace='notification'),
 ]
