@@ -21,7 +21,7 @@ def device_token_receive(request):
     if DeviceToken.objects.filter(uuid=uuid).count() != 0:
         token = DeviceToken.objects.get(uuid=uuid)
         token.device_token = device_token
-        token.save
+        token.save()
     else:
         token = DeviceToken()
         token.device_token = device_token
