@@ -10,7 +10,6 @@ def read(filename):
     import os
     BASE_DIR = os.path.dirname(__file__)
     filename = os.path.join(BASE_DIR, filename)
-    print(filename)
     with open(filename, 'r') as f:
         return f.read()
 
@@ -36,7 +35,6 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
@@ -45,7 +43,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    keywords='django ios push notification apple',
+    keywords='django ios push notification apple apns',
     author='nnsnodnb',
     author_email='ahr63_gej@me.com',
     url='https://github.com/nnsnodnb/django-ios-notificaitons',
