@@ -1,0 +1,11 @@
+[report]
+include =
+    notification/*.py
+    tests/*.py
+omit =
+    notification/__init__.py
+    notification/tests/compatibility.py
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+

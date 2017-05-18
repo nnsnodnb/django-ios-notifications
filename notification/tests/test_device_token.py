@@ -2,6 +2,8 @@ from ..models import DeviceToken
 from django.contrib.auth.models import User
 from unittest import TestCase
 
+import six
+
 
 class DeviceTokenTestCase(TestCase):
 
@@ -11,7 +13,7 @@ class DeviceTokenTestCase(TestCase):
 
     def test_no_device_token(self):
         device_tokens = DeviceToken.objects.all()
-        self.assertCountEqual(device_tokens, [])
+        six.assertCountEqual(self, device_tokens, [])
 
     def test_one_device_token_without_user(self):
         device_token = DeviceToken()
