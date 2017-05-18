@@ -6,7 +6,7 @@ def parse_args():
     import optparse
     parser = optparse.OptionParser()
     parser.add_option('--where', default=None)
-    opts, args = parser.parser_args()
+    opts, args = parser.parse_args()
     return opts, args
 
 
@@ -32,7 +32,7 @@ def run_tests(base_dir=None, apps=None, verbosity=1, interavtive=False):
         app_tests = [
             'notification'
         ]
-    failuers = test_runner.run_tests(app_tests)
+    failures = test_runner.run_tests(app_tests)
     sys.exit(bool(failures))
 
 

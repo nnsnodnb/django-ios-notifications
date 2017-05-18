@@ -32,10 +32,6 @@ ROOT_URLCONF = 'tests.url'
 
 SITE_ID = 1
 
-USE_I18N = True
-
-USE?L10N = True
-
 MEDIA_ROOT = ''
 
 MEDIA_URL = ''

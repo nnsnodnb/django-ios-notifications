@@ -10,6 +10,7 @@ def read(filename):
     import os
     BASE_DIR = os.path.dirname(__file__)
     filename = os.path.join(BASE_DIR, filename)
+    print(filename)
     with open(filename, 'r') as f:
         return f.read()
 
@@ -24,7 +25,7 @@ setup(
     name=NAME,
     version=VERSION,
     description='A Django plugin for Apple Notification Service',
-    long_description('README.rst'),
+    long_description=read('README.rst'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -48,7 +49,7 @@ setup(
     author='nnsnodnb',
     author_email='ahr63_gej@me.com',
     url='https://github.com/nnsnodnb/django-ios-notificaitons',
-    download_url='https://github.com/nnsnodnb/django-ios-notifications/tarball/master',
+    download_url='https://github.com/nnsnodnb/django-ios-notifications/tarball/feature/travis',
     license='MIT',
     packages=find_packages(),
     include_package_data=True,
