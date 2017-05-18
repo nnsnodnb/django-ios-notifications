@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import DeviceToken
 
 import json
 
 
+@csrf_exempt
 def device_token_receive(request):
     if request.method != 'PUT':
         return HttpResponse(status=405)
@@ -14,6 +16,11 @@ def device_token_receive(request):
 
     query_dict = request.body.decode('utf-8')
     body = json.loads(query_dict)
+
+    if 'device_token' not in body:
+        return JsonResponse({'error': 'Bad Request'}, status=400)
+    if 'uuid' not in body:
+        return JsonResponse({'error': 'Bad Request'}, status=400)
 
     device_token = body['device_token']
     uuid = body['uuid']
