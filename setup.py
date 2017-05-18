@@ -49,7 +49,7 @@ setup(
     author='nnsnodnb',
     author_email='ahr63_gej@me.com',
     url='https://github.com/nnsnodnb/django-ios-notificaitons',
-    download_url='https://github.com/nnsnodnb/django-ios-notifications/tarball/feature/travis',
+    download_url='https://github.com/nnsnodnb/django-ios-notifications/tarball/master',
     license='MIT',
     packages=find_packages(),
     include_package_data=True,
