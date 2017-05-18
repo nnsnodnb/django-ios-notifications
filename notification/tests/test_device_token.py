@@ -6,10 +6,8 @@ from unittest import TestCase
 class DeviceTokenTestCase(TestCase):
 
     def tearDown(self):
-        for device_token in DeviceToken.objects.all():
-            device_token.delete()
-        for user in User.objects.all():
-            user.delete()
+        DeviceToken.objects.all().delete()
+        User.objects.all().delete()
 
     def test_no_device_token(self):
         device_tokens = DeviceToken.objects.all()
