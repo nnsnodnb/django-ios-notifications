@@ -42,6 +42,10 @@ def send_notification_with_device_token(request, mode, device_token):
     # mode: 0 or 1
     # 0: develop target
     # 1: product target
+
+    if request.user is None or not request.user.is_superuser:
+        return HttpResponse('Please login for admin user.', status=401)
+
     if mode > 1:
         return HttpResponse('check your mode number(0 or 1).', status=400)
 
