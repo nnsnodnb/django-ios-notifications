@@ -37,3 +37,15 @@ def device_token_receive(request):
 
     return JsonResponse({'result': 'success'}, status=200)
 
+
+def send_notification_with_device_token(request, mode, device_token):
+    # mode: 0 or 1
+    # 0: develop target
+    # 1: product target
+    if mode > 1:
+        return HttpResponse('check your mode number(0 or 1).', status=400)
+
+    try:
+        device_token = DeviceToken.objects.get(device_token=device_token)
+    except ValueError:
+        return HttpResponse(status=200)
