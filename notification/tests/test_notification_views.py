@@ -49,6 +49,16 @@ class NotificationViewsTestCase(TestCase):
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'error': 'Bad Request'})
 
+    def test_device_token_receive_with_twice(self):
+        parameter = {'device_token': '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76',
+                     'uuid': 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}
+        request = self.factory.put('/receive/',
+                                   json.dumps(parameter))
+        request.content_type = 'application/json'
+        for _ in range(2):
+            response = device_token_receive(request)
+        self.assertEqual(response.status_code, 200)
+
     def test_device_token_receive_method_get(self):
         request = self.factory.get('/receive/')
         response = device_token_receive(request)
