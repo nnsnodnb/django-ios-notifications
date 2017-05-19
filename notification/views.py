@@ -48,4 +48,4 @@ def send_notification_with_device_token(request, mode, device_token):
     try:
         device_token = DeviceToken.objects.get(device_token=device_token)
     except ValueError:
-        return HttpResponse(status=200)
+        return HttpResponse('Not found. Your device token.', status=404)
