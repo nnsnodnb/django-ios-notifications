@@ -168,3 +168,8 @@ ENV/
 [Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
+
+### Other file ###
+notification/cert.pem
+notification/tests/cert.pem
+
