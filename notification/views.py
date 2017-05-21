@@ -47,18 +47,18 @@ def send_notification_with_device_token(request, mode, device_token):
     if request.user is None or not request.user.is_superuser:
         return HttpResponse('Please login for admin user.', status=401)
 
-    if mode > 1:
+    if int(mode) > 1:
         return HttpResponse('check your mode number(0 or 1).', status=400)
 
     message = 'This is test push notification.'
-    if 'message' not in request.GET:
+    if 'message' in request.GET:
         message = request.GET['message']
 
     try:
         device_token = DeviceToken.objects.get(device_token=device_token)
         send_result = send_notification(message=message,
-                                        device_token=device_token,
-                                        use_sandbox=True if mode == 0 else False)
+                                        device_token=device_token.device_token,
+                                        use_sandbox=True if int(mode) == 0 else False)
         if send_result is not None:
             return HttpResponse(send_result, status=404)
         else:
