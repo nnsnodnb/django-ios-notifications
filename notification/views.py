@@ -60,5 +60,5 @@ def send_notification_with_device_token(request, mode, device_token):
                           device_token=device_token.device_token,
                           use_sandbox=True if int(mode) == 0 else False)
         return HttpResponse('Successful sending.', status=200)
-    except ValueError:
+    except:
         return HttpResponse('Not found. Your device token.', status=404)
