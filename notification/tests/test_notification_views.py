@@ -99,6 +99,7 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.device_token = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76'
+        self.wrong_token = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e79'
         self.uuid = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
         self.cert_file_path = os.path.dirname(os.path.abspath(__file__)) + '/cert.pem'
         self.super_user = User.objects.create_superuser(username='super_user',
@@ -112,22 +113,41 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
     def tearDown(self):
         self.super_user.delete()
         self.general_user.delete()
-        if not os.path.isfile(self.cert_file_path):
-            return
-        os.remove(self.cert_file_path)
+        DeviceToken.objects.all().delete()
 
-    def test_target_develop_is_device_token_is_not_message_is_super_user(self):
-        # Target: Development
-        # Device token is here.
-        # Message is not here.
-        # Request by super user
+    def test_target_develop_wrong_device_token_is_not_message_is_super_user(self):
+        """
+        Target: Development
+        Device token is wrong.
+        Message is not here.
+        Request by super user.
+        """
         device_token = DeviceToken(device_token=self.device_token,
                                    uuid=self.uuid)
         device_token.save()
-        f = open(self.cert_file_path, 'w')
-        f.write('test_case_test_case_test_case')
-        f.close()
-        request = self.factory.get('/send/0/' + self.device_token)
+        request = self.factory.get('/send/')
         request.user = self.super_user
-        response = send_notification_with_device_token(request)
-        self.assertEqual(response.status_code, 200)
+        response = send_notification_with_device_token(request,
+                                                       mode=0,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 404)
+
+    def test_target_develop_match_device_token_is_not_message_is_general_user(self):
+        """
+        Target: Develop
+        Device token is match.
+        Message is not here.
+        Request by general user.
+        """
+        device_token = DeviceToken(device_token=self.device_token,
+                                   uuid=self.uuid)
+        device_token.save()
+        request = self.factory.get('/send/')
+        request.user = self.general_user
+        response = send_notification_with_device_token(request,
+                                                       mode=0,
+                                                       device_token=self.device_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_distribute_wrong_device_token_is_not_message_is_super_user(self):
+        pass
