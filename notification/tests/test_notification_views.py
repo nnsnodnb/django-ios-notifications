@@ -97,8 +97,8 @@ class NotificationViewDeviceTokenReceiveTest(TestCase):
 class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
 
     def setUp(self):
-        self.factory = RequestFactory()
-        self.request = self.factory.get('/send/')
+        factory = RequestFactory()
+        self.request = factory.get('/send/')
         self.device_token_hex = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76'
         self.wrong_token = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e79'
         self.uuid = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
