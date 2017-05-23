@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.test.client import RequestFactory
 from unittest import TestCase
 from ..models import DeviceToken
@@ -98,7 +98,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
-        self.device_token = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76'
+        self.request = self.factory.get('/send/')
+        self.device_token_hex = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76'
         self.wrong_token = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e79'
         self.uuid = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
         self.cert_file_path = os.path.dirname(os.path.abspath(__file__)) + '/cert.pem'
@@ -110,44 +111,167 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
                                                      password='test_case_for_general_user')
         self.general_user.save()
 
+        self.device_token = DeviceToken(device_token=self.device_token_hex,
+                                        uuid=self.uuid)
+        self.device_token.save()
+
     def tearDown(self):
         self.super_user.delete()
         self.general_user.delete()
         DeviceToken.objects.all().delete()
 
-    def test_target_develop_wrong_device_token_is_not_message_is_super_user(self):
+    def test_target_develop_wrong_device_token_is_anonymous(self):
+        """
+        Target: Develop
+        Device token is wrong.
+        Message is not here.
+        Request by anonymous.
+        """
+        self.request.user = AnonymousUser()
+        response = send_notification_with_device_token(self.request,
+                                                       mode=0,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_develop_wrong_device_token_is_super_user(self):
         """
         Target: Development
         Device token is wrong.
         Message is not here.
         Request by super user.
         """
-        device_token = DeviceToken(device_token=self.device_token,
-                                   uuid=self.uuid)
-        device_token.save()
-        request = self.factory.get('/send/')
-        request.user = self.super_user
-        response = send_notification_with_device_token(request,
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
                                                        mode=0,
                                                        device_token=self.wrong_token)
         self.assertEqual(response.status_code, 404)
 
-    def test_target_develop_match_device_token_is_not_message_is_general_user(self):
+    def test_target_develop_wrong_device_token_is_general_user(self):
+        """
+        Target: Develop
+        Device token is wrong.
+        Message is not here.
+        Request by general user.
+        """
+        self.request.user = self.general_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=0,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_develop_match_device_token_is_anonymous(self):
+        """
+        Target: Develop
+        Device token is match.
+        Message is not here.
+        Request by anonymous. 
+        """
+        self.request.user = AnonymousUser()
+        response = send_notification_with_device_token(self.request,
+                                                       mode=0,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_develop_match_device_token_is_super_user(self):
+        """
+        Target: Develop
+        Device token is match.
+        Message is not here.
+        Request by super user.
+        """
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=0,
+                                                       device_token=self.device_token_hex.encode())
+        self.assertEqual(response.status_code, 200)
+
+    def test_target_develop_match_device_token_is_general_user(self):
         """
         Target: Develop
         Device token is match.
         Message is not here.
         Request by general user.
         """
-        device_token = DeviceToken(device_token=self.device_token,
-                                   uuid=self.uuid)
-        device_token.save()
-        request = self.factory.get('/send/')
-        request.user = self.general_user
-        response = send_notification_with_device_token(request,
+        self.request.user = self.general_user
+        response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.device_token)
+                                                       device_token=self.device_token_hex.encode())
         self.assertEqual(response.status_code, 401)
 
-    def test_target_distribute_wrong_device_token_is_not_message_is_super_user(self):
-        pass
+    def test_target_distribute_wrong_device_token_is_anonymous(self):
+        """
+        Target: Distribute
+        Device token is wrong.
+        Message is not here.
+        Request by anonymous.
+        """
+        self.request.user = AnonymousUser()
+        response = send_notification_with_device_token(self.request,
+                                                       mode=1,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_distribute_wrong_device_token_is_super_user(self):
+        """
+        Target: Distribute
+        Device token is wrong.
+        Message is not here.
+        Request by super user.
+        """
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=1,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 404)
+
+    def test_target_distribute_wrong_device_token_is_general_user(self):
+        """
+        Target: Distribute
+        Device token is wrong.
+        Message is not here.
+        Request by general user.
+        """
+        self.request.user = self.general_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=1,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_distribute_match_device_token_is_anonymous(self):
+        """
+        Target: Distribute
+        Device token is match.
+        Message is not here.
+        Request by anonymous. 
+        """
+        self.request.user = AnonymousUser()
+        response = send_notification_with_device_token(self.request,
+                                                       mode=1,
+                                                       device_token=self.wrong_token)
+        self.assertEqual(response.status_code, 401)
+
+    def test_target_distribute_match_device_token_is_super_user(self):
+        """
+        Target: Distribute
+        Device token is match.
+        Message is not here.
+        Request by super user.
+        """
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=1,
+                                                       device_token=self.device_token_hex.encode())
+        self.assertEqual(response.status_code, 200)
+
+    def test_target_distribute_match_device_token_is_general_user(self):
+        """
+        Target: Distribute
+        Device token is match.
+        Message is not here.
+        Request by general user.
+        """
+        self.request.user = self.general_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=1,
+                                                       device_token=self.device_token_hex.encode())
+        self.assertEqual(response.status_code, 401)
