@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.test.client import RequestFactory
 from unittest import TestCase
 from ..models import DeviceToken
-from ..views import device_token_receive
+from ..views import device_token_receive, send_notification_with_device_token
 
 import json
 import os
