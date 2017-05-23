@@ -5,6 +5,7 @@ from .models import DeviceToken
 from .send import send_notification
 
 import json
+import threading
 
 
 @csrf_exempt
@@ -56,9 +57,10 @@ def send_notification_with_device_token(request, mode, device_token):
 
     try:
         device_token = DeviceToken.objects.get(device_token=device_token)
-        send_notification(message=message,
-                          device_token=device_token.device_token,
-                          use_sandbox=True if int(mode) == 0 else False)
+        t = threading.Thread(target=send_notification, args=(message,
+                                                             device_token.device_token,
+                                                             True if int(mode) == 0 else False))
+        t.start()
         return HttpResponse('Successful sending.', status=200)
     except:
         return HttpResponse('Not found. Your device token.', status=404)
