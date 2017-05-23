@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import DeviceToken
+from .send import send_notification
 
 import json
+import threading
 
 
 @csrf_exempt
@@ -37,3 +39,30 @@ def device_token_receive(request):
 
     return JsonResponse({'result': 'success'}, status=200)
 
+
+def send_notification_with_device_token(request, mode, device_token, execute=True):
+    # mode: 0 or 1
+    # 0: develop target
+    # 1: product target
+
+    if request.user is None or not request.user.is_superuser:
+        return HttpResponse('Please login for admin user.', status=401)
+
+    if int(mode) > 1:
+        return HttpResponse('check your mode number(0 or 1).', status=400)
+
+    message = 'This is test push notification.'
+    if 'message' in request.GET:
+        message = request.GET['message']
+
+    try:
+        device_token = DeviceToken.objects.get(device_token=device_token)
+        if not execute:
+            return HttpResponse('End process.', status=200)
+        t = threading.Thread(target=send_notification, args=(message,
+                                                             device_token.device_token,
+                                                             True if int(mode) == 0 else False))
+        t.start()
+        return HttpResponse('Successful sending.', status=200)
+    except:
+        return HttpResponse('Not found. Your device token.', status=404)
