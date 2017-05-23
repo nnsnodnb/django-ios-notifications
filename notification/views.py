@@ -40,7 +40,7 @@ def device_token_receive(request):
     return JsonResponse({'result': 'success'}, status=200)
 
 
-def send_notification_with_device_token(request, mode, device_token):
+def send_notification_with_device_token(request, mode, device_token, execute=True):
     # mode: 0 or 1
     # 0: develop target
     # 1: product target
@@ -57,6 +57,8 @@ def send_notification_with_device_token(request, mode, device_token):
 
     try:
         device_token = DeviceToken.objects.get(device_token=device_token)
+        if not execute:
+            return HttpResponse('End process.', status=200)
         t = threading.Thread(target=send_notification, args=(message,
                                                              device_token.device_token,
                                                              True if int(mode) == 0 else False))

@@ -130,7 +130,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = AnonymousUser()
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_develop_wrong_device_token_is_super_user(self):
@@ -143,7 +144,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.super_user
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 404)
 
     def test_target_develop_wrong_device_token_is_general_user(self):
@@ -156,7 +158,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.general_user
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_develop_match_device_token_is_anonymous(self):
@@ -169,7 +172,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = AnonymousUser()
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_develop_match_device_token_is_super_user(self):
@@ -182,7 +186,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.super_user
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.device_token_hex.encode())
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=False)
         self.assertEqual(response.status_code, 200)
 
     def test_target_develop_match_device_token_is_general_user(self):
@@ -195,7 +200,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.general_user
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.device_token_hex.encode())
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_distribute_wrong_device_token_is_anonymous(self):
@@ -208,7 +214,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = AnonymousUser()
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_distribute_wrong_device_token_is_super_user(self):
@@ -221,7 +228,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.super_user
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 404)
 
     def test_target_distribute_wrong_device_token_is_general_user(self):
@@ -234,7 +242,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.general_user
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_distribute_match_device_token_is_anonymous(self):
@@ -247,7 +256,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = AnonymousUser()
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.wrong_token)
+                                                       device_token=self.wrong_token,
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
 
     def test_target_distribute_match_device_token_is_super_user(self):
@@ -260,7 +270,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.super_user
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.device_token_hex.encode())
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=False)
         self.assertEqual(response.status_code, 200)
 
     def test_target_distribute_match_device_token_is_general_user(self):
@@ -273,5 +284,6 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.request.user = self.general_user
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.device_token_hex.encode())
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=False)
         self.assertEqual(response.status_code, 401)
