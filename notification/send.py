@@ -1,4 +1,4 @@
-from apns import APNs, Frame, Payload
+from .apns.apns import APNs, Frame, Payload
 
 import os
 import time
