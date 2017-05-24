@@ -1,0 +1,18 @@
+{% if not error and not form %}
+    <script>
+        alert('Success upload');
+        location.href = '/cert_upload';
+    </script>
+{% elif error == 'wrong' and not form %}
+    <script>
+        alert('Please upload a file of the following format.\n \"***********.p12\"');
+        location.href = '/cert_upload';
+    </script>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+    <p>{% csrf_token %}</p>
+    <p>Certificate file: {{ form.cert_file }}</p>
+    <p>Password: {{ form.cert_password }}</p>
+    <p><input type="submit" value="Send"></p>
+</form>

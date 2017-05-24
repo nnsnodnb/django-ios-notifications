@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .form import CertFileUploadForm
 from .models import DeviceToken
 from .send import send_notification
 
 import json
+import os
 import threading
+
+UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 
 @csrf_exempt
@@ -66,3 +70,26 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
         return HttpResponse('Successful sending.', status=200)
     except:
         return HttpResponse('Not found. Your device token.', status=404)
+
+
+def cert_upload(request):
+    if not request.user.is_superuser:
+        return HttpResponse('Access Denied', status=403)
+
+    if request.method == 'POST':
+        form = CertFileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            cert_file = request.FILES['file']
+            if not cert_file.name.endswith('.p12'):
+                return render(request, 'upload.html', {'error': 'wrong'})
+
+            destination = open(UPLOAD_DIR + cert_file.name, 'wb+')
+            for chunk in cert_file.chunks():
+                destination.write(chunk)
+            destination.close()
+            return render(request, 'upload.html', {'error': None})
+        else:
+            return render(request, 'upload.html', {'error': 'invalid'})
+    else:
+        form = CertFileUploadForm()
+        return render(request, 'upload.html', {'form': form})
