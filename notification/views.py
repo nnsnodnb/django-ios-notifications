@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .form import CertFileUploadForm
@@ -74,7 +74,7 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
 
 def cert_upload(request):
     if not request.user.is_superuser:
-        return HttpResponse('Access Denied', status=403)
+        return redirect('notification:login')
 
     if request.method == 'POST':
         form = CertFileUploadForm(request.POST, request.FILES)
