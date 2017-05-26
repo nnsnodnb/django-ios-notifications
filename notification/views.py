@@ -80,7 +80,7 @@ def cert_upload(request):
         form = CertFileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             cert_file = request.FILES['file']
-            if not cert_file.name.endswith('.p12'):
+            if not cert_file.name.endswith('.pem'):
                 return render(request, 'upload.html', {'error': 'wrong'})
 
             destination = open(UPLOAD_DIR + cert_file.name, 'wb+')
