@@ -3,13 +3,10 @@ from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .form import CertFileUploadForm
 from .models import DeviceToken
-from .send import send_notification
+from .utils import send_notification, upload_certificate
 
 import json
-import os
 import threading
-
-UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 
 @csrf_exempt
@@ -79,15 +76,9 @@ def cert_upload(request):
     if request.method == 'POST':
         form = CertFileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            cert_file = request.FILES['file']
-            if not cert_file.name.endswith('.pem'):
-                return render(request, 'upload.html', {'error': 'wrong'})
+            result = upload_certificate(request.FILES['cert_file'], target_mode=int(request.POST['target']))
+            return render(request, 'upload.html', result)
 
-            destination = open(UPLOAD_DIR + cert_file.name, 'wb+')
-            for chunk in cert_file.chunks():
-                destination.write(chunk)
-            destination.close()
-            return render(request, 'upload.html', {'error': None})
         else:
             return render(request, 'upload.html', {'error': 'invalid'})
     else:

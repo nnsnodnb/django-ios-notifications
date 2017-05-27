@@ -30,12 +30,17 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="input-group" style="margin-bottom:10px">
-                <p><span class="input-group-addon"><i class="fa fa-user fa-fw"></i>Certificate file (PEM)</span></p>
+                <p><span class="input-group-addon">Certificate file (PEM)</span></p>
                 {{ form.cert_file }}
             </div>
             <div class="input-group" style="margin-bottom:10px">
-                <p><span class="input-group-addon"><i class="fa fa-lock fa-fw"></i>Password</span></p>
+                <p><span class="input-group-addon">Password</span></p>
                 {{ form.cert_password }}
+            </div>
+            <div class="input-group" style="margin-bottom:10px">
+                <p><span class="input_group-addon">Target</span></p>
+                <p>{{ form.target.0 }}</p>
+                <p>{{ form.target.1 }}</p>
             </div>
             <p><input type="submit" value="Send"></p>
         </form>
