@@ -11,7 +11,7 @@
     </script>
 {% elif error == 'wrong' and not form %}
     <script>
-        alert('Please upload a file of the following format.\n \"***********.p12\"');
+        alert('Please upload a file of the following format.\n \"***********.pem\"');
         location.href = '/cert_upload';
     </script>
 {% endif %}
@@ -30,7 +30,7 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="input-group" style="margin-bottom:10px">
-                <p><span class="input-group-addon"><i class="fa fa-user fa-fw"></i>Certificate file</span></p>
+                <p><span class="input-group-addon"><i class="fa fa-user fa-fw"></i>Certificate file (PEM)</span></p>
                 {{ form.cert_file }}
             </div>
             <div class="input-group" style="margin-bottom:10px">
