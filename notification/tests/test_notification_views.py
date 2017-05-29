@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User, AnonymousUser
+from django.http import QueryDict
 from django.test.client import RequestFactory
 from unittest import TestCase
 from ..models import DeviceToken
-from ..views import device_token_receive, send_notification_with_device_token
+from ..views import device_token_receive, send_notification_with_device_token, cert_upload
 
 import json
 import os
@@ -287,3 +288,26 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
                                                        device_token=self.device_token_hex.encode(),
                                                        execute=False)
         self.assertEqual(response.status_code, 401)
+
+
+class CertUploadTest(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.super_user = User.objects.create_superuser(username='super_user',
+                                                        password='test_case_for_super_user',
+                                                        email='super_user@localhost')
+        self.super_user.save()
+        self.general_user = User.objects.create_user(username='general_user',
+                                                     password='test_case_for_general_user')
+        self.general_user.save()
+
+    def tearDown(self):
+        self.super_user.delete()
+        self.general_user.delete()
+
+    def test_method_get_by_superuser(self):
+        request = self.factory.get('/cert_upload')
+        request.user = self.super_user
+        response = cert_upload(request)
+        self.assertEqual(response.status_code, 200)
