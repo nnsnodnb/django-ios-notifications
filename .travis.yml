@@ -14,6 +14,7 @@ branches:
   - master
   - develop
 script:
+  - python manage.py collectstatic
   - tox -r
 after_success:
   - coverage report
