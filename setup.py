@@ -3,7 +3,7 @@ import sys
 from setuptools import setup, find_packages
 
 NAME = 'ios-notification'
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 
 def read(filename):
