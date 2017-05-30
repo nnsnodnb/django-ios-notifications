@@ -9,13 +9,24 @@ import os
 class UtilsSendNotificationTest(TestCase):
 
     def setUp(self):
-        pass
+        self.cert_model = CertFile(filename='test.pem')
+        self.cert_model.save()
+        self.device_token_hex = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76'
+        with open(UPLOAD_DIR + '/test.pem', 'a') as f:
+            for _ in range(10):
+                f.write('test_pem test_pem\n')
 
     def tearDown(self):
-        pass
+        self.cert_model.delete()
+        if not os.path.isfile(UPLOAD_DIR + '/test.pem'):
+            return
+        os.remove(UPLOAD_DIR + '/test.pem')
 
     def test_use_sandbox_notification(self):
-        pass
+        with self.assertRaises(FileNotFoundError):
+            send_notification(message='test case',
+                              device_token=self.device_token_hex,
+                              use_sandbox=True)
 
 
 class UtilsUploadCertificateTest(TestCase):
