@@ -351,3 +351,13 @@ class CertUploadTest(TestCase):
         self.client_csrf.login(username=self.general_user.username, password='test_case_for_general_user')
         response = self.client_csrf.post('/cert_upload')
         self.assertEqual(response.status_code, 302)
+
+    def test_method_post_with_csrf_by_super_user_parameter_invalid(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.user = self.super_user
+        request.content_type = 'multipart/form-data'
+        request.POST['target'] = 0
+
+        response = cert_upload(request)
+        self.assertEqual(response.status_code, 400)
