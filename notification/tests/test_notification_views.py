@@ -20,9 +20,6 @@ class NotificationViewDeviceTokenReceiveTest(TestCase):
     def tearDown(self):
         DeviceToken.objects.all().delete()
 
-    def tearDown(self):
-        DeviceToken.objects.all().delete()
-
     def test_device_token_receive_with_all_parameter(self):
         parameter = {'device_token': self.device_token,
                      'uuid': self.uuid}
