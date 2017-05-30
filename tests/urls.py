@@ -11,8 +11,7 @@ def _patterns():
             url(r'^', include('notification.urls', namespace='notification')),
         ]
     else:
-        return patterns('',
-                        url(r'^', include('notification.urls', namespace='notification')),)
+        return patterns(url(r'^', include('notification.urls', namespace='notification')),)
 
 urlpatterns = _patterns()
 
