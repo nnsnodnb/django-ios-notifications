@@ -172,3 +172,5 @@ pip-selfcheck.json
 ### Other file ###
 notification/tests/cert.pem
 notification/cert.pem
+notification/files/
+!notification/files/__init__.py

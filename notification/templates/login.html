@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+
+{% if form.errors  %}
+    <div class="alert alert-danger" role="alert">
+        <p>Your usernamne and password didn't match. Please try again.</p>
+    </div>
+{% endif %}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2 class="panel-title text-center">Login for admin user</h2>
+    </div>
+    <div class="panel-body">
+        <form action="{% url 'notification:login' %}" method="post" role="form">
+            {% csrf_token %}
+            <div class="input-group" style="margin-bottom:10px">
+                <p><span class="input-group-addon"><i class="fa fa-user fa-fw"></i>Username</span></p>
+                <input id="id_username" name="username" type="text" value="" maxlength="256" placeholder="Username" aria-describedby="sizing-addon1" autofocus required>
+            </div>
+            <div class="input-group" style="margin-bottom:10px">
+                <p><span class="input-group-addon"><i class="fa fa-lock fa-fw"></i>Password</span></p>
+                <input id="id_password" name="password" type="password" maxlength="256" placeholder="Password" aria-describedby="sizing-addon1" required>
+            </div>
+            <button type="submit" style="margin-bottom:-20px"><i class="fa fa-sign-in">Login</i></button>
+            <input name="next" type="hidden" value="/cert_upload"/>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .form import CertFileUploadForm
 from .models import DeviceToken
-from .send import send_notification
+from .utils import send_notification, upload_certificate
 
 import json
 import threading
@@ -66,3 +67,20 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
         return HttpResponse('Successful sending.', status=200)
     except:
         return HttpResponse('Not found. Your device token.', status=404)
+
+
+def cert_upload(request):
+    if not request.user.is_superuser:
+        return redirect('notification:login')
+
+    if request.method == 'POST':
+        form = CertFileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            result = upload_certificate(request.FILES['cert_file'], target_mode=int(request.POST['target']))
+            return render(request, 'upload.html', result)
+
+        else:
+            return render(request, 'upload.html', {'error': 'invalid'}, status=400)
+    else:
+        form = CertFileUploadForm()
+        return render(request, 'upload.html', {'form': form})

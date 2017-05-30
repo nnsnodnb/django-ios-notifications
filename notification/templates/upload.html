@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Upload certificate files{% endblock title %}
+
+{% block content %}
+
+{% if not error and not form %}
+    <script>
+        alert('Success upload');
+        location.href = '/cert_upload';
+    </script>
+{% elif error == 'wrong' and not form %}
+    <script>
+        alert('Please upload a file of the following format.\n \"***********.pem\"');
+        location.href = '/cert_upload';
+    </script>
+{% endif %}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2 class="panel-title text-center">Upload your certificate</h2>
+    </div>
+    <div class="panel-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="input-group" style="margin-bottom:10px">
+                <p><span class="input-group-addon">Certificate file (PEM)</span></p>
+                {{ form.cert_file }}
+            </div>
+            <div class="input-group" style="margin-bottom:10px">
+                <p><span class="input_group-addon">Target</span></p>
+                <p>{{ form.target.0 }}</p>
+                <p>{{ form.target.1 }}</p>
+            </div>
+            <p><input type="submit" value="Send"></p>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
