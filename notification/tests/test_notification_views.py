@@ -288,6 +288,40 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
                                                        execute=False)
         self.assertEqual(response.status_code, 401)
 
+    def test_target_wrong_is_super_user(self):
+        """
+        Target: Wrong
+        """
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=2,
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=False)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, b'check your mode number(0 or 1).')
+
+    def test_target_develop_match_device_token_is_super_user_is_message(self):
+        """
+        Target: Develop
+        Device token is match.
+        Message is here.
+        Request by super user.
+        """
+        request = HttpRequest()
+        request.user = self.super_user
+        request.GET['message'] = 'test case'
+
+        response = send_notification_with_device_token(request, 0, self.device_token_hex, execute=False)
+        self.assertEqual(response.status_code, 200)
+
+    def test_execute_send_notification_is_super_user(self):
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=0,
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=True)
+        self.assertEqual(response.status_code, 404)
+
 
 class CertUploadTest(TestCase):
 

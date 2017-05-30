@@ -5,7 +5,8 @@ include =
 omit =
     notification/__init__.py
     notification/tests/compatibility.py
+    notification/apns/*.py
 exclude_lines =
     pragma: no cover
     if __name__ == .__main__.:
-
+    return HttpResponse('Successful sending.', status=200)
