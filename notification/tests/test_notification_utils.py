@@ -19,9 +19,8 @@ class UtilsSendNotificationTest(TestCase):
 
     def tearDown(self):
         self.cert_model.delete()
-        if not os.path.isfile(UPLOAD_DIR + '/test.pem'):
-            return
-        os.remove(UPLOAD_DIR + '/test.pem')
+        if os.path.isfile(UPLOAD_DIR + '/test.pem'):
+            os.remove(UPLOAD_DIR + '/test.pem')
 
     def test_use_sandbox_notification(self):
         try:
@@ -60,9 +59,8 @@ class UtilsUploadCertificateTest(TestCase):
         if self.duplicate_test:
             CertFile.objects.all().delete()
             self.duplicate_test = False
-        if not os.path.isfile(UPLOAD_DIR + '/test.pem'):
-            return
-        os.remove(UPLOAD_DIR + '/test.pem')
+        if os.path.isfile(UPLOAD_DIR + '/test.pem'):
+            os.remove(UPLOAD_DIR + '/test.pem')
 
     def test_upload_certificate_for_success(self):
         with open(self.cert_file, 'rb+') as f:
