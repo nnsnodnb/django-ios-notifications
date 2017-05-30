@@ -7,9 +7,12 @@ except ImportError:
 
 def _patterns():
     if django.VERSION >= (1, 9):
-        return []
+        return [
+            url(r'^', include('notification.urls', namespace='notification')),
+        ]
     else:
-        return patterns('',)
+        return patterns('',
+                        url(r'^', include('notification.urls', namespace='notification')),)
 
 urlpatterns = _patterns()
 
