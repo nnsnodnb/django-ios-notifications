@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, AnonymousUser
-from django.http import QueryDict
+from django.test import Client
 from django.test.client import RequestFactory
 from unittest import TestCase
 from ..models import DeviceToken
@@ -294,6 +294,7 @@ class CertUploadTest(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+        self.client = Client()
         self.super_user = User.objects.create_superuser(username='super_user',
                                                         password='test_case_for_super_user',
                                                         email='super_user@localhost')
@@ -306,8 +307,29 @@ class CertUploadTest(TestCase):
         self.super_user.delete()
         self.general_user.delete()
 
-    def test_method_get_by_superuser(self):
-        request = self.factory.get('/cert_upload')
-        request.user = self.super_user
+    def test_method_get_by_super_user(self):
+        self.client.login(username=self.super_user.username, password='test_case_for_super_user')
+        response = self.client.get('/cert_upload')
+        self.assertEqual(response.status_code, 200)
+
+    def test_method_get_by_general_user(self):
+        self.client.login(username=self.general_user.username, password='test_case_for_general_user')
+        response = self.client.get('/cert_upload')
+        self.assertEqual(response.status_code, 302)
+
+    def test_method_post_without_csrf_by_super_user(self):
+        self.client.login(username=self.super_user.username, password='test_case_for_super_user')
+        response = self.client.post('/cert_upload')
+        self.assertEqual(response.status_code, 200)
+
+    def test_method_post_without_csrf_by_general_user(self):
+        request = self.factory.post('/cert_upload')
+        request.user = self.general_user
         response = cert_upload(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_method_post_with_csrf_by_super_user(self):
+        self.client.enforce_csrf_checks = True
+        self.client.login(username='super_user', password='test_case_for_super_user')
+        response = self.client.post('/cert_upload')
         self.assertEqual(response.status_code, 200)
