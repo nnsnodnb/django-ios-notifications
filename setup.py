@@ -46,7 +46,7 @@ setup(
     keywords='django ios push notification apple apns',
     author='nnsnodnb',
     author_email='ahr63_gej@me.com',
-    url='https://github.com/nnsnodnb/django-ios-notificaitons',
+    url='https://github.com/nnsnodnb/django-ios-notifications',
     download_url='https://github.com/nnsnodnb/django-ios-notifications/tarball/master',
     license='MIT',
     packages=find_packages(),
