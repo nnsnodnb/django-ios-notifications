@@ -4,7 +4,6 @@ from .models import CertFile
 
 
 import os
-import time
 
 UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/files/'
 
@@ -13,17 +12,13 @@ def send_notification(message, device_token, use_sandbox=True):
     try:
         cert_file = CertFile.objects.get(target_mode=0 if use_sandbox else 1, is_use=True)
         apns = APNs(use_sandbox=use_sandbox,
-                    cert_file=os.path.dirname(os.path.abspath(__file__)) + '/files/' + cert_file.filename + '.pem',
-                    enhanced=True)
+                    cert_file=UPLOAD_DIR + cert_file.filename,
+                    key_file=UPLOAD_DIR + cert_file.filename)
 
         payload = Payload(alert=message, sound='default', badge=1)
 
-        frame = Frame()
-        identifier = 1
-        expiry = int(time.time() + 3600)
-        priority = 10
-        frame.add_item(device_token, payload, identifier, expiry, priority)
-        apns.gateway_server.send_notification_multiple(frame)
+        apns.gateway_server.send_notification(device_token, payload)
+
     except ObjectDoesNotExist:
         raise CertFile.DoesNotExist
 
