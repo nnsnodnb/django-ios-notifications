@@ -314,6 +314,14 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         response = send_notification_with_device_token(request, 0, self.device_token_hex, execute=False)
         self.assertEqual(response.status_code, 200)
 
+    def test_execute_send_notification_is_super_user(self):
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
+                                                       mode=0,
+                                                       device_token=self.device_token_hex.encode(),
+                                                       execute=True)
+        self.assertEqual(response.status_code, 404)
+
 
 class CertUploadTest(TestCase):
 

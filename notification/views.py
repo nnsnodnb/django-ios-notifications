@@ -6,7 +6,6 @@ from .models import DeviceToken
 from .utils import send_notification, upload_certificate
 
 import json
-import threading
 
 
 @csrf_exempt
@@ -60,10 +59,10 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
         device_token = DeviceToken.objects.get(device_token=device_token)
         if not execute:
             return HttpResponse('End process.', status=200)
-        t = threading.Thread(target=send_notification, args=(message,
-                                                             device_token.device_token,
-                                                             True if int(mode) == 0 else False))
-        t.start()
+
+        send_notification(message=message,
+                          device_token=device_token.device_token,
+                          use_sandbox=True if int(mode) == 0 else False)
         return HttpResponse('Successful sending.', status=200)
     except:
         return HttpResponse('Not found. Your device token.', status=404)
