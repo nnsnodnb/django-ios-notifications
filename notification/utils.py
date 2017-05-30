@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from .apns.apns import APNs, Frame, Payload
 from .models import CertFile
 
@@ -23,8 +24,8 @@ def send_notification(message, device_token, use_sandbox=True):
         priority = 10
         frame.add_item(device_token, payload, identifier, expiry, priority)
         apns.gateway_server.send_notification_multiple(frame)
-    except ValueError:
-        pass
+    except ObjectDoesNotExist:
+        raise CertFile.DoesNotExist
 
 
 def upload_certificate(cert_file, target_mode):
