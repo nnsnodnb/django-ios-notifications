@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User, AnonymousUser
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import HttpRequest
 from django.test import Client
 from django.test.client import RequestFactory
 from unittest import TestCase
@@ -293,8 +295,8 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
 class CertUploadTest(TestCase):
 
     def setUp(self):
-        self.factory = RequestFactory()
-        self.client = Client()
+        self.client = Client(enforce_csrf_checks=True)
+        self.client_csrf = Client()
         self.super_user = User.objects.create_superuser(username='super_user',
                                                         password='test_case_for_super_user',
                                                         email='super_user@localhost')
@@ -302,10 +304,16 @@ class CertUploadTest(TestCase):
         self.general_user = User.objects.create_user(username='general_user',
                                                      password='test_case_for_general_user')
         self.general_user.save()
+        self.cert_file = os.path.dirname(os.path.abspath(__file__)) + '/files/test.pem'
 
     def tearDown(self):
+        self.client = None
+        self.client_csrf = None
         self.super_user.delete()
         self.general_user.delete()
+        if not os.path.isfile(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/files/test.pem'):
+            return
+        os.remove(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/files/test.pem')
 
     def test_method_get_by_super_user(self):
         self.client.login(username=self.super_user.username, password='test_case_for_super_user')
@@ -320,16 +328,26 @@ class CertUploadTest(TestCase):
     def test_method_post_without_csrf_by_super_user(self):
         self.client.login(username=self.super_user.username, password='test_case_for_super_user')
         response = self.client.post('/cert_upload')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
 
     def test_method_post_without_csrf_by_general_user(self):
-        request = self.factory.post('/cert_upload')
-        request.user = self.general_user
-        response = cert_upload(request)
-        self.assertEqual(response.status_code, 302)
+        self.client.login(username=self.general_user.username, password='test_case_for_general_user')
+        response = self.client.post('/cert_upload')
+        self.assertEqual(response.status_code, 403)
 
     def test_method_post_with_csrf_by_super_user(self):
-        self.client.enforce_csrf_checks = True
-        self.client.login(username='super_user', password='test_case_for_super_user')
-        response = self.client.post('/cert_upload')
+        request = HttpRequest()
+        request.method = 'POST'
+        request.user = self.super_user
+        request.content_type = 'multipart/form-data'
+        request.POST['target'] = 0
+        with open(self.cert_file, 'rb') as f:
+            request.FILES['cert_file'] = SimpleUploadedFile(f.name, f.read())
+
+        response = cert_upload(request)
         self.assertEqual(response.status_code, 200)
+
+    def test_method_post_with_csrf_by_general_user(self):
+        self.client_csrf.login(username=self.general_user.username, password='test_case_for_general_user')
+        response = self.client_csrf.post('/cert_upload')
+        self.assertEqual(response.status_code, 302)

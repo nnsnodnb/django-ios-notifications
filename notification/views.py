@@ -80,7 +80,7 @@ def cert_upload(request):
             return render(request, 'upload.html', result)
 
         else:
-            return render(request, 'upload.html', {'error': 'invalid'})
+            return render(request, 'upload.html', {'error': 'invalid'}, status=400)
     else:
         form = CertFileUploadForm()
         return render(request, 'upload.html', {'form': form})
