@@ -12,9 +12,10 @@ class UtilsSendNotificationTest(TestCase):
         self.cert_model = CertFile(filename='test.pem')
         self.cert_model.save()
         self.device_token_hex = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76'
-        with open(UPLOAD_DIR + '/test.pem', 'a') as f:
+        with open(UPLOAD_DIR + '/test.pem', 'w') as f:
             for _ in range(10):
                 f.write('test_pem test_pem\n')
+            f.close()
 
     def tearDown(self):
         self.cert_model.delete()
@@ -50,6 +51,10 @@ class UtilsUploadCertificateTest(TestCase):
         self.dummy_file = os.path.dirname(os.path.abspath(__file__)) + '/files/dummy.dummy'
         self.cert_model = CertFile(filename='test.pem')
         self.duplicate_test = False
+        with open(UPLOAD_DIR + '/test.pem', 'w') as f:
+            for _ in range(10):
+                f.write('test_pem test_pem\n')
+            f.close()
 
     def tearDown(self):
         if self.duplicate_test:
@@ -71,7 +76,6 @@ class UtilsUploadCertificateTest(TestCase):
             self.assertEqual(result, {'error': 'wrong'})
 
     def test_upload_certificate_for_success_with_duplication_file_name(self):
-        self.cert_model.save()
         self.duplicate_test = True
         with open(self.cert_file, 'rb+') as f:
             upload_file = SimpleUploadedFile(f.name, f.read())
