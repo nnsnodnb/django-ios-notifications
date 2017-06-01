@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from .apns.apns import APNs, Frame, Payload
+from .apns.apns import APNs, Payload
 from .models import CertFile
 
 
