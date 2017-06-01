@@ -36,6 +36,13 @@ class Command(BaseCommand):
             help='Target device tokens.',
         )
         parser.add_argument(
+            '-a', '--all',
+            action='store_true',
+            dest='all',
+            default=False,
+            help='Target all device tokens.',
+        )
+        parser.add_argument(
             '--title',
             action='store',
             type=str,
@@ -94,7 +101,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         error = False
-        if options['device_tokens'] is None:
+        if options['device_tokens'] is None and not options['all']:
             try:
                 raise ValueError('Please specify a device tokens (-t or --token)')
             except ValueError as e:
@@ -111,12 +118,15 @@ class Command(BaseCommand):
         if error:
             sys.exit()
 
-        device_tokens = list(filter(lambda device_token:
-                                    DeviceToken.objects.filter(device_token=device_token).count() > 0,
-                                    options['device_tokens']))
-
-        _ = map(lambda item: logging.warning('There is no match for the specified device token: {}'.format(item)),
-                list(set(options['device_tokens']) - set(device_tokens)))
+        if options['all']:
+            device_tokens = [token.device_token for token in DeviceToken.objects.all()]
+        else:
+            device_tokens = list(filter(lambda token:
+                                        DeviceToken.objects.filter(device_token=token).count() > 0,
+                                        options['device_tokens']))
+            _ = list(map(lambda item:
+                         logging.warning('There is no match for the specified device token: {}'.format(item)),
+                         list(set(options['device_tokens']) - set(device_tokens))))
 
         try:
             cert_file = CertFile.objects.get(target_mode=int(not options['sandbox']), is_use=True)
@@ -125,7 +135,6 @@ class Command(BaseCommand):
 
         apns = APNs(use_sandbox=options['sandbox'], cert_file=CERT_FILE_UPLOAD_DIR + cert_file.filename, enhanced=True)
 
-        identifier = random.getrandbits(32)
         payload_alert = PayloadAlert(title=options['title'], subtitle=options['subtitle'], body=options['body'])
         payload = Payload(alert=payload_alert if payload_alert.body is not None else payload_alert.title,
                           sound=options['sound'],
@@ -133,6 +142,5 @@ class Command(BaseCommand):
                           content_available=options['content_available'],
                           mutable_content=options['mutable_content'])
 
-        _ = map(lambda device_token:
-                apns.gateway_server.send_notification(device_token, payload, identifier=identifier),
-                device_tokens)
+        for device_token in device_tokens:
+            apns.gateway_server.send_notification(device_token, payload)
