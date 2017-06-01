@@ -1,13 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
-from notification.apns.apns import APNs, Frame, Payload, PayloadAlert
+from notification.apns.apns import APNs, Payload, PayloadAlert
 from notification.models import DeviceToken, CertFile
 
 import logging
 import os.path
 import random
 import sys
-import time
 
 
 CERT_FILE_UPLOAD_DIR = os.path.join(
@@ -19,11 +18,6 @@ CERT_FILE_UPLOAD_DIR = os.path.join(
 class Command(BaseCommand):
 
     help = 'Send Push Notification to multi device tokens.'
-
-    def __init__(self):
-        self.frame = Frame()
-        self.expiry = int(time.time() + 3600)
-        self.priority = 10
 
     def add_arguments(self, parser):
         parser.add_argument(
