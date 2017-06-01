@@ -326,9 +326,6 @@ class Payload(object):
                 d['alert'] = self.alert.dict()
             else:
                 d['alert'] = self.alert
-                print(self.alert)
-                print('String')
-                print(d)
         if self.sound:
             d['sound'] = self.sound
         if self.badge is not None:
