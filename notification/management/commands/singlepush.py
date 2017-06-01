@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from notification.apns.apns import APNs, Payload, PayloadAlert
 from notification.models import DeviceToken, CertFile
 
-import json
 import logging
 import os.path
 import sys
@@ -91,14 +90,6 @@ class Command(BaseCommand):
             default=False,
             help='Use mutable-content. (Support for iOS9 or higher)',
         )
-        parser.add_argument(
-            '--custom',
-            action='store',
-            type=str,
-            metavar='STR_JSON',
-            dest='custom',
-            help='Attach custom JSON.'
-        )
 
     def handle(self, *args, **options):
         error = False
@@ -114,14 +105,6 @@ class Command(BaseCommand):
             try:
                 raise ValueError('Please input title in push notification (--title)')
             except ValueError as e:
-                logging.error(e)
-
-        if options['custom'] is not None:
-            options['custom'] = options['custom'].replace('\"', '\'')
-            try:
-                json.loads(options['custom'])
-            except json.decoder.JSONDecodeError as e:
-                error = True
                 logging.error(e)
 
         if error:
@@ -145,7 +128,6 @@ class Command(BaseCommand):
                           sound=options['sound'],
                           badge=options['badge'],
                           content_available=options['content_available'],
-                          mutable_content=options['mutable_content'],
-                          custom=options['custom'])
+                          mutable_content=options['mutable_content'])
 
         apns.gateway_server.send_notification(options['device_token'], payload)

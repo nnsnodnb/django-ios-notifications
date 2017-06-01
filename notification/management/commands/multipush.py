@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from notification.apns.apns import APNs, Frame, Payload, PayloadAlert
 from notification.models import DeviceToken, CertFile
 
-import json
 import logging
 import os.path
 import random
@@ -98,14 +97,6 @@ class Command(BaseCommand):
             default=False,
             help='Use mutable-content. (Support for iOS9 or higher)',
         )
-        parser.add_argument(
-            '--custom',
-            action='store',
-            type=str,
-            metavar='STR_JSON',
-            dest='custom',
-            help='Attach custom JSON.'
-        )
 
     def handle(self, *args, **options):
         error = False
@@ -125,13 +116,6 @@ class Command(BaseCommand):
 
         if error:
             sys.exit()
-
-        if options['custom'] is not None:
-            options['custom'] = options['custom'].replace('\"', '\'')
-            try:
-                json.loads(options['custom'])
-            except json.decoder.JSONDecodeError as e:
-                logging.error(e)
 
         device_tokens = list(filter(lambda device_token:
                                     DeviceToken.objects.filter(device_token=device_token).count() > 0,
@@ -153,8 +137,7 @@ class Command(BaseCommand):
                           sound=options['sound'],
                           badge=options['badge'],
                           content_available=options['content_available'],
-                          mutable_content=options['mutable_content'],
-                          custom=options['custom'])
+                          mutable_content=options['mutable_content'])
 
         _ = map(lambda device_token:
                 apns.gateway_server.send_notification(device_token, payload, identifier=identifier),
