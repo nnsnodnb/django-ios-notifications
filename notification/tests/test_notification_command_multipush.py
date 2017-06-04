@@ -5,6 +5,7 @@ from django.core.management import call_command
 class ManagementCommandsMultiPushTest(TestCase):
 
     def setUp(self):
+        self.command_name = 'multipush'
         self.options = {'verbosity': 1,
                         'settings': None,
                         'pythonpath': None,
@@ -25,7 +26,13 @@ class ManagementCommandsMultiPushTest(TestCase):
     def tearDown(self):
         pass
 
-    def test_without_device_tokens(self):
+    def test_without_device_tokens_and_title(self):
         args = []
-        
-        call_command('multipush', *args, **self.options)
+        with self.assertRaises(SystemExit):
+            call_command(self.command_name, *args, **self.options)
+
+    def test_with_device_token_for_all_without_title(self):
+        args = []
+        self.options['all'] = True
+        with self.assertRaises(SystemExit):
+            call_command(self.command_name, *args, **self.options)
