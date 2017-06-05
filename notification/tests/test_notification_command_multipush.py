@@ -68,3 +68,18 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.options['all'] = True
         self.options['title'] = 'test case title'
         self.assertIsNone(call_command(self.command_name, *self.args, **self.options))
+
+    def test_valid_custom(self):
+        self.options['extra'] = "{'key':'value'}"
+        self.options['sandbox'] = True
+        self.options['all'] = True
+        self.options['title'] = 'test case title'
+        self.assertIsNone(call_command(self.command_name, *self.args, **self.options))
+
+    def test_invalid_custom(self):
+        self.options['extra'] = "{'key':'value','key2'}"
+        self.options['sandbox'] = True
+        self.options['all'] = True
+        self.options['title'] = 'test case title'
+        with self.assertRaises(SystemExit):
+            call_command(self.command_name, *self.args, **self.options)
