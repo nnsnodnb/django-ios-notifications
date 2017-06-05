@@ -84,3 +84,10 @@ class ManagementCommandsSinglePushTest(TestCase):
         self.options['title'] = 'test case title'
         with self.assertRaises(SystemExit):
             call_command(self.command_name, *self.args, **self.options)
+
+    def test_not_match_device_token(self):
+        self.options['sandbox'] = True
+        self.options['device_token'] = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e75'
+        self.options['title'] = 'test case title'
+        with self.assertRaises(SystemExit):
+            call_command(self.command_name, *self.args, **self.options)
