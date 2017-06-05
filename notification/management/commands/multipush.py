@@ -13,6 +13,7 @@ CERT_FILE_UPLOAD_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
     'files/'
 )
+PYTHON_VERSION = sys.version_info
 
 
 class Command(BaseCommand):
@@ -128,10 +129,21 @@ class Command(BaseCommand):
         custom = None
         if options['extra'] is not None:
             extra = options['extra'].replace('\'', '\"')
-            try:
-                custom = json.loads(extra)
-            except json.decoder.JSONDecodeError as e:
-                sys.exit(logging.error(e))
+            if PYTHON_VERSION.major >= 3 and PYTHON_VERSION.minor >= 5:
+                try:
+                    custom = json.loads(extra)
+                except json.decoder.JSONDecodeError as e:
+                    sys.exit(logging.error(e))
+            elif PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 4:
+                try:
+                    custom = json.loads(extra)
+                except ValueError as e:
+                    sys.exit(logging.error(e))
+            elif PYTHON_VERSION.major == 2:
+                try:
+                    custom = json.loads(extra)
+                except ValueError as e:
+                    sys.exit(logging.error(e))
 
         if options['all']:
             device_tokens = [token.device_token for token in DeviceToken.objects.all()]
