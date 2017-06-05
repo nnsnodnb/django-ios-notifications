@@ -20,7 +20,7 @@ django-ios-notifications
 .. image:: https://img.shields.io/pypi/l/ios-notification.svg
    :target: https://pypi.python.org/pypi/ios-notification
 
-A Django plugin for Apple Notification Service
+A Django plugin for Apple Push Notification Service.
 
 Supported python versions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
