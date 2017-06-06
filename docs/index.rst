@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-========================
-django-ios-notifications
-========================
+================
+ios-notification
+================
 
 .. image:: https://travis-ci.org/nnsnodnb/django-ios-notifications.svg?branch=master
     :target: https://travis-ci.org/nnsnodnb/django-ios-notifications
@@ -26,10 +26,12 @@ django-ios-notifications
 .. image:: https://img.shields.io/pypi/l/ios-notification.svg
    :target: https://pypi.python.org/pypi/ios-notification
 
+Contents
+========
 
 .. toctree::
     :maxdepth: 2
-    
+
     introduction
     command
 

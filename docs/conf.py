@@ -85,6 +85,7 @@ import sphinx_bootstrap_theme
 
 html_theme = 'bootstrap'
 html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -156,6 +157,3 @@ texinfo_documents = [
      author, 'ios-notification', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
