@@ -94,6 +94,10 @@ html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
 html_theme_options = {
     'bootswatch_theme': 'flatly',
     'bootstrap_version': '3',
+    'navbar_site_name': 'Content',
+    'navbar_pagenav': False,
+    'globaltoc_depth': 2,
+    'navbar_fixed_top': 'true',
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
