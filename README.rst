@@ -19,6 +19,9 @@ django-ios-notifications
    :target: https://pypi.python.org/pypi/ios-notification
 .. image:: https://img.shields.io/pypi/l/ios-notification.svg
    :target: https://pypi.python.org/pypi/ios-notification
+.. image:: https://readthedocs.org/projects/ios-notifications/badge/?version=latest
+   :target: http://ios-notifications.readthedocs.io/?badge=latest
+   :alt: Documentation Status
 
 A Django plugin for Apple Push Notification Service.
 
