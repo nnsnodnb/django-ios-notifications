@@ -46,8 +46,7 @@ Prepare application
 
 Please access http://127.0.0.1:8000/cert_upload and login **by superuser**, then upload push notification's certificate.
 
-.. warning::
-
+.. note::
 
     * PEM file not locked.
     * Secure PEM file which is not double transfer etc.
