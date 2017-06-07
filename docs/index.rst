@@ -34,6 +34,7 @@ Contents
 
     introduction
     prepare
+    routes
     command
 
 Indices and tables
