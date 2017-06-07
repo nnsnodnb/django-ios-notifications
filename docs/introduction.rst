@@ -22,24 +22,6 @@ Installation
 
     $ pip install ios-notification
 
-Add ``notification`` into ``INSTALLED_APPS`` in ``settings.py`` file
-
-.. code:: python
-
-    INSTALLED_APPS += (
-        'notification',
-    )
-
-Add ``notification`` routing in ``urls.py`` file
-
-.. code:: python
-
-    from django.conf.urls import include
-
-    urlpatterns += (
-        url(r'^ios/', include('notification.urls', namespace='notification')),
-    )
-
 Author
 ------
 

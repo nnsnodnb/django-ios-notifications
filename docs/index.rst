@@ -33,6 +33,7 @@ Contents
     :maxdepth: 2
 
     introduction
+    prepare
     command
 
 Indices and tables
