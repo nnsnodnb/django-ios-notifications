@@ -31,6 +31,8 @@ Request parameters
 +--------------+--------+----------+------------+
 | uuid         | String | YES      | 36 letters |
 +--------------+--------+----------+------------+
+| sandbox      | Bool   | YES      | -          |
++--------------+--------+----------+------------+
 
 * Request method: ``PUT``
 * Content-Type: ``application/json``
@@ -46,7 +48,7 @@ Sample Request
 .. code:: bash
 
     $ curl -X PUT http://127.0.0.1:8000/receive \
-      -d '{"device_token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "uuid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"}'
+      -d '{"device_token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "uuid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", "sandbox": true}'
 
 .. _send:
 
