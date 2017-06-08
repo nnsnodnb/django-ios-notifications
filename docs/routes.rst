@@ -102,16 +102,23 @@ NOT use sandbox
 ``/cert_upload``
 ----------------
 
+Upload push notifications' certificates by superuser.
 
+.. note::
+
+    * PEM file not locked.
+    * Secure PEM file which is not double transfer etc.
 
 .. _login:
 
 ``/login``
 ----------
 
-
+Login to session.
 
 .. _logout:
 
 ``/logout``
 -----------
+
+Logout from session.
