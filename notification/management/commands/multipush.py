@@ -146,10 +146,11 @@ class Command(BaseCommand):
                     sys.exit(logging.error(e))
 
         if options['all']:
-            device_tokens = [token.device_token for token in DeviceToken.objects.all()]
+            device_tokens = [token.device_token for token in DeviceToken.objects.filter(use_sandbox=options['sandbox'])]
         else:
             device_tokens = list(filter(lambda token:
-                                        DeviceToken.objects.filter(device_token=token).count() > 0,
+                                        DeviceToken.objects.filter(device_token=token,
+                                                                   use_sandbox=options['sandbox']).count() > 0,
                                         options['device_tokens']))
             _ = list(map(lambda item:
                          logging.warning('There is no match for the specified device token: {}'.format(item)),
