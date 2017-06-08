@@ -77,7 +77,8 @@ class NotificationViewDeviceTokenReceiveTest(TestCase):
         device_token.save()
 
         parameter = {'device_token': 'ec203ae05072eaa39474fd4bd06c3b36344602295078615cef67fcbdb7e94aef',
-                     'uuid': 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}
+                     'uuid': 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+                     'sandbox': True}
         request = self.factory.put('/receive/',
                                    json.dumps(parameter))
         request.content_type = 'application/json'
