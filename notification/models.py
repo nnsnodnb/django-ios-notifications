@@ -6,6 +6,7 @@ from django.utils.timezone import now
 class DeviceToken(models.Model):
     device_token = models.CharField(blank=False, default='', max_length=255)
     uuid = models.CharField(blank=False, default='', max_length=255)
+    use_sandbox = models.BooleanField(blank=False, default=True)
     user = models.ForeignKey(User, null=True, blank=True, default=None)
 
 
