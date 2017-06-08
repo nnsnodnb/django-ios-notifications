@@ -19,11 +19,15 @@ def device_token_receive(request):
     query_dict = request.body.decode('utf-8')
     body = json.loads(query_dict)
 
+    error = False
     if 'device_token' not in body:
-        return JsonResponse({'error': 'Bad Request'}, status=400)
+        error = True
     if 'uuid' not in body:
-        return JsonResponse({'error': 'Bad Request'}, status=400)
+        error = True
     if 'sandbox' not in body:
+        error = True
+
+    if error:
         return JsonResponse({'error': 'Bad Request'}, status=400)
 
     device_token = body['device_token']
