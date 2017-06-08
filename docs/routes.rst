@@ -67,7 +67,7 @@ TARGET_MODE
 DEVICE_TOKEN
 ------------
 
-* Device token registered DATABSE.
+* Device token registered DATABASE.
 
 Request parameter
 -----------------
