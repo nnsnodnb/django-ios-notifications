@@ -9,7 +9,10 @@ class CertFileUploadForm(forms.Form):
 
 class NotificationSendForm(forms.Form):
 
-    target = forms.ChoiceField(choices=((0, 'Develop'), (1, 'Distribute')), required=True, widget=forms.RadioSelect)
+    target = forms.ChoiceField(choices=((0, 'Develop'), (1, 'Distribute')),
+                               required=True,
+                               widget=forms.RadioSelect,
+                               initial=0)
     device_token = forms.ModelMultipleChoiceField(label='Device Token',
                                                   queryset=DeviceToken.objects.all().values_list('device_token',
                                                                                                  flat=True)
