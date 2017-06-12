@@ -8,7 +8,48 @@
 <script src="{% static 'notification/js/jquery.min.js' %}"></script>
 <script src="{% static 'notification/js/send_form.js' %}"></script>
 
-{% csrf_token %}
-{{ form.as_p }}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2>Send Push Notification</h2>
+    </div>
+    <div class="panel-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Target</span></p>
+                {{ form.target }}
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon input-device-token">Device Token</span></p>
+                {{ form.device_token }}
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Title: </span>{{ form.title }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Subtitle: </span>{{ form.subtitle }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Body: </span>{{ form.body }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Sound: </span>{{ form.sound }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Badge: </span>{{ form.badge }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">content-available: </span>{{ form.content_available }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">mutable-content: </span>{{ form.mutable_content }}</p>
+            </div>
+            <div class="input-group" style="margin-button: 10px">
+                <p><span class="input-group-addon">Extra</span></p>
+                {{ form.extra }}
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock %}
