@@ -21,7 +21,7 @@ class NotificationSendForm(forms.Form):
     subtitle = forms.CharField(required=False)
     body = forms.CharField(required=False)
     sound = forms.CharField(initial='default', required=True)
-    badge = forms.IntegerField(initial=1, required=True)
+    badge = forms.IntegerField(initial=1, min_value=0, required=True)
     content_available = forms.BooleanField(initial=False, required=False)
     mutable_content = forms.BooleanField(initial=False, required=False)
     extra = forms.CharField(widget=forms.Textarea, required=False)
