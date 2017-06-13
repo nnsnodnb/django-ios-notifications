@@ -13,10 +13,12 @@ class NotificationSendForm(forms.Form):
                                required=True,
                                widget=forms.RadioSelect,
                                initial=0)
-    device_token = forms.ModelMultipleChoiceField(label='Device Token',
-                                                  queryset=DeviceToken.objects.all().values_list('device_token',
-                                                                                                 flat=True)
-                                                  )
+    device_token = forms.MultipleChoiceField(label='Device Token',
+                                             choices=lambda: ((token.id, token.device_token)
+                                                              for token
+                                                              in DeviceToken.objects.all()),
+                                             required=True
+                                             )
     title = forms.CharField(required=True)
     subtitle = forms.CharField(required=False)
     body = forms.CharField(required=False)

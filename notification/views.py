@@ -100,10 +100,20 @@ def send_notification_form(request):
     if request.method == 'POST':
         form = NotificationSendForm(request.POST)
         if form.is_valid():
-            return render(request, 'send_form.html')
+            target = request.POST['target']
+            device_tokens = request.POST.getlist('device_token')
+            title = request.POST['title']
+            subtitle = request.POST['subtitle'] or None
+            body = request.POST['body'] or None
+            sound = request.POST['sound']
+            badge = int(request.POST['badge'])
+            content_available = True if 'content_available' in request.POST else False
+            mutable_content = True if 'mutable_content' in request.POST else False
+            extra = request.POST['extra'] or None
+            return redirect('notification:send_form')
 
         else:
-            render(request, 'send_form.html')
+            return redirect('notification:send_form')
 
     else:
         form = NotificationSendForm()
