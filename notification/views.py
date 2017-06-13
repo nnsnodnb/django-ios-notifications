@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -50,13 +51,12 @@ def device_token_receive(request):
     return JsonResponse({'result': 'success'}, status=200)
 
 
+@login_required(login_url='/login')
+@user_passes_test(lambda user: user.is_superuser)
 def send_notification_with_device_token(request, mode, device_token, execute=True):
     # mode: 0 or 1
     # 0: develop target
     # 1: product target
-
-    if request.user is None or not request.user.is_superuser:
-        return HttpResponse('Please login for admin user.', status=401)
 
     if int(mode) > 1:
         return HttpResponse('check your mode number(0 or 1).', status=400)
@@ -78,10 +78,9 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
         return HttpResponse('Not found. Your device token.', status=404)
 
 
+@login_required(login_url='/login')
+@user_passes_test(lambda user: user.is_superuser)
 def cert_upload(request):
-    if not request.user.is_superuser:
-        return redirect('notification:login')
-
     if request.method == 'POST':
         form = CertFileUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -95,10 +94,9 @@ def cert_upload(request):
         return render(request, 'upload.html', {'form': form})
 
 
+@login_required(login_url='/login')
+@user_passes_test(lambda user: user.is_superuser)
 def send_notification_form(request):
-    if not request.user.is_superuser:
-        return redirect('notification:login')
-
     if request.method == 'POST':
         form = NotificationSendForm(request.POST)
         if form.is_valid():
