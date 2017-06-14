@@ -27,19 +27,19 @@ class UtilsSendNotificationTest(TestCase):
             # python3
             with self.assertRaises(FileNotFoundError):
                 send_notification(message='test case',
-                                  device_token=self.device_token_hex,
+                                  device_tokens=[self.device_token_hex],
                                   use_sandbox=True)
         except:
             # python2
             with self.assertRaises(IOError):
                 send_notification(message='test case',
-                                  device_token=self.device_token_hex,
+                                  device_tokens=[self.device_token_hex],
                                   use_sandbox=True)
 
     def test_use_sandbox_notification_for_value_error(self):
         with self.assertRaises(CertFile.DoesNotExist):
             send_notification(message='test case',
-                              device_token=self.device_token_hex,
+                              device_tokens=[self.device_token_hex],
                               use_sandbox=False)
 
 
