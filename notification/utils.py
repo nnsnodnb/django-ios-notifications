@@ -8,17 +8,27 @@ import os
 UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/files/'
 
 
-def send_notification(message, device_token, use_sandbox=True):
+def send_notification(message,
+                      device_tokens,
+                      sound='default',
+                      badge=1,
+                      content_available=False,
+                      mutable_content=False,
+                      custom=None,
+                      use_sandbox=True,
+                      payload_alert=None):
     try:
         cert_file = CertFile.objects.get(target_mode=0 if use_sandbox else 1, is_use=True)
         apns = APNs(use_sandbox=use_sandbox,
-                    cert_file=UPLOAD_DIR + cert_file.filename,
-                    key_file=UPLOAD_DIR + cert_file.filename)
-
-        payload = Payload(alert=message, sound='default', badge=1)
-
-        apns.gateway_server.send_notification(device_token, payload)
-
+                    cert_file=UPLOAD_DIR + cert_file.filename)
+        payload = Payload(alert=payload_alert or message,
+                          sound=sound,
+                          badge=badge,
+                          content_available=content_available,
+                          mutable_content=mutable_content,
+                          custom=custom)
+        for device_token in device_tokens:
+            apns.gateway_server.send_notification(device_token, payload=payload)
     except ObjectDoesNotExist:
         raise CertFile.DoesNotExist
 
