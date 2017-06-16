@@ -468,17 +468,17 @@ class SendNotificationFormTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_method_post_without_parameter_by_superuser(self):
-        self.client_csrf._login(user=self.super_user)
+        self.client_csrf.login(username=self.super_user.username, password='test_case_for_super_user')
         response = self.client_csrf.post('/send_form')
         self.assertEqual(response.status_code, 302)
 
     def test_method_post_without_parameter_by_general_user(self):
-        self.client_csrf._login(user=self.general_user)
+        self.client_csrf.login(username=self.general_user.username, password='test_case_for_general_user')
         response = self.client_csrf.post('/send_form')
         self.assertEqual(response.status_code, 302)
 
     def test_method_post_without_csrf(self):
-        self.client._login(user=self.super_user)
+        self.client.login(username=self.super_user.username, password='test_case_for_super_user')
         response = self.client.post('/send_form')
         self.assertEqual(response.status_code, 403)
 
