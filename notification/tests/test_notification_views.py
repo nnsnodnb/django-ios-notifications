@@ -9,6 +9,7 @@ from ..views import device_token_receive, send_notification_with_device_token, c
 
 import json
 import os
+import sys
 
 
 class NotificationViewDeviceTokenReceiveTest(TestCase):
@@ -333,7 +334,7 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
                                                        mode=0,
                                                        device_token=self.device_token_hex.encode(),
                                                        execute=True)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
 
 class CertUploadTest(TestCase):
@@ -438,6 +439,7 @@ class SendNotificationFormTest(TestCase):
                                         uuid='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
                                         use_sandbox=True)
         self.device_token.save()
+        self.python_version = sys.version_info
 
     def tearDown(self):
         self.client = None
@@ -488,3 +490,21 @@ class SendNotificationFormTest(TestCase):
 
         response = send_notification_form(request, execute=False)
         self.assertEqual(response.status_code, 302)
+
+    def test_method_post_with_error_custom_parameter_by_superuser(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.user = self.super_user
+        self.query_dict.update({'extra': '{"key1":"value1","key2"}'})
+
+        if self.python_version.major == 3 and self.python_version.minor <= 4:
+            with self.assertRaises(json.decoder.JSONDecodeError):
+                send_notification_form(request, execute=False)
+
+        elif self.python_version == 3 and self.python_version.minor <= 4:
+            with self.assertRaises(ValueError):
+                send_notification_form(request, execute=False)
+
+        elif self.python_version.major == 2:
+            with self.assertRaises(ValueError):
+                send_notification_form(request, execute=False)
