@@ -103,7 +103,7 @@ def cert_upload(request):
 @login_required(login_url='/login')
 @require_http_methods(['GET', 'POST'])
 @user_passes_test(lambda user: user.is_superuser)
-def send_notification_form(request):
+def send_notification_form(request, execute=True):
     if request.method == 'POST':
         form = NotificationSendForm(request.POST)
         if form.is_valid():
@@ -118,40 +118,42 @@ def send_notification_form(request):
             content_available = True if 'content_available' in request.POST else False
             mutable_content = True if 'mutable_content' in request.POST else False
             extra = request.POST['extra'] or None
-            extra = extra.replace('\'', '\"')
-            if PYTHON_VERSION.major >= 3 and PYTHON_VERSION.minor >= 5:
-                try:
-                    extra = json.loads(extra)
-                except json.decoder.JSONDecodeError as e:
-                    logging.error(e)
-                    return HttpResponse(e, status=400)
+            if extra:
+                extra = extra.replace('\'', '\"')
+                if PYTHON_VERSION.major >= 3 and PYTHON_VERSION.minor >= 5:
+                    try:
+                        extra = json.loads(extra)
+                    except json.decoder.JSONDecodeError as e:
+                        logging.error(e)
+                        return HttpResponse(e, status=400)
 
-            elif PYTHON_VERSION == 3 and PYTHON_VERSION.minor <= 4:
-                try:
-                    extra = json.loads(extra)
-                except ValueError as e:
-                    logging.error(e)
-                    return HttpResponse(e, status=400)
+                elif PYTHON_VERSION == 3 and PYTHON_VERSION.minor <= 4:
+                    try:
+                        extra = json.loads(extra)
+                    except ValueError as e:
+                        logging.error(e)
+                        return HttpResponse(e, status=400)
 
-            elif PYTHON_VERSION.major == 2:
-                try:
-                    extra = json.loads(extra)
-                except ValueError as e:
-                    logging.error(e)
-                    return HttpResponse(e, status=400)
+                elif PYTHON_VERSION.major == 2:
+                    try:
+                        extra = json.loads(extra)
+                    except ValueError as e:
+                        logging.error(e)
+                        return HttpResponse(e, status=400)
 
             payload_alert = PayloadAlert(title=title,
                                          subtitle=subtitle,
                                          body=body)
-            send_notification(message=None,
-                              device_tokens=device_tokens,
-                              sound=sound,
-                              badge=badge,
-                              content_available=content_available,
-                              mutable_content=mutable_content,
-                              custom=extra,
-                              use_sandbox=target,
-                              payload_alert=payload_alert)
+            if execute:
+                send_notification(message=None,
+                                  device_tokens=device_tokens,
+                                  sound=sound,
+                                  badge=badge,
+                                  content_available=content_available,
+                                  mutable_content=mutable_content,
+                                  custom=extra,
+                                  use_sandbox=target,
+                                  payload_alert=payload_alert)
 
             return redirect('notification:send_form')
 
