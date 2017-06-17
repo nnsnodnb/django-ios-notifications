@@ -497,14 +497,5 @@ class SendNotificationFormTest(TestCase):
         request.user = self.super_user
         self.query_dict.update({'extra': '{"key1":"value1","key2"}'})
 
-        if self.python_version.major == 3 and self.python_version.minor <= 4:
-            with self.assertRaises(json.decoder.JSONDecodeError):
-                send_notification_form(request, execute=False)
-
-        elif self.python_version == 3 and self.python_version.minor <= 4:
-            with self.assertRaises(ValueError):
-                send_notification_form(request, execute=False)
-
-        elif self.python_version.major == 2:
-            with self.assertRaises(ValueError):
-                send_notification_form(request, execute=False)
+        response = send_notification_form(request, execute=False)
+        self.assertEqual(response.status_code, 302)
