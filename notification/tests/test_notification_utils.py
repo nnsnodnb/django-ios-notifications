@@ -24,18 +24,9 @@ class UtilsSendNotificationTest(TestCase):
             os.remove(UPLOAD_DIR + '/test.pem')
 
     def test_use_sandbox_notification(self):
-        if sys.version_info.major == 3:
-            # python3
-            with self.assertRaises(FileNotFoundError):
-                send_notification(message='test case',
-                                  device_tokens=[self.device_token_hex],
-                                  use_sandbox=True)
-        else:
-            # python2
-            with self.assertRaises(IOError):
-                send_notification(message='test case',
-                                  device_tokens=[self.device_token_hex],
-                                  use_sandbox=True)
+        self.assertIsNone(send_notification(message='test case',
+                                            device_tokens=[self.device_token_hex],
+                                            use_sandbox=True))
 
     def test_use_sandbox_notification_for_value_error(self):
         with self.assertRaises(CertFile.DoesNotExist):
