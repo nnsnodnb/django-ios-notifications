@@ -1,6 +1,6 @@
 [report]
 include =
-    notification/*.py
+    notification/tests/*.py
 omit =
     notification/__init__.py
     notification/tests/compatibility.py

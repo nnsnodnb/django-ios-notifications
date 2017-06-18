@@ -14,9 +14,9 @@ class NotificationSendForm(forms.Form):
                                widget=forms.RadioSelect,
                                initial=0)
     device_token = forms.MultipleChoiceField(label='Device Token',
-                                             choices=lambda: ((token.id, token.device_token)
-                                                              for token
-                                                              in DeviceToken.objects.all()),
+                                             choices=tuple(map(lambda token:
+                                                               (token.id, token.device_token),
+                                                               DeviceToken.objects.all())),
                                              required=True
                                              )
     title = forms.CharField(required=True)

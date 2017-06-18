@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.core.files.uploadedfile import SimpleUploadedFile
 from unittest import TestCase
 from ..forms import CertFileUploadForm
