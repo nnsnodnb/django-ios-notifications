@@ -20,8 +20,7 @@ def send_notification(message,
     try:
         cert_file = CertFile.objects.get(target_mode=0 if use_sandbox else 1, is_use=True)
         apns = APNs(use_sandbox=use_sandbox,
-                    cert_file=UPLOAD_DIR + cert_file.filename,
-                    enhanced=True)
+                    cert_file=UPLOAD_DIR + cert_file.filename)
         payload = Payload(alert=payload_alert or message,
                           sound=sound,
                           badge=badge,

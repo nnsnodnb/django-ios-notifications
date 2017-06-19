@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpRequest, QueryDict
+from django.http import HttpRequest
 from django.test import Client
 from django.test.client import RequestFactory
 from unittest import TestCase
-from ..models import DeviceToken, CertFile
+from ..models import DeviceToken
 from ..views import device_token_receive, send_notification_with_device_token, cert_upload, send_notification_form
 
 import json
@@ -410,81 +410,7 @@ class CertUploadTest(TestCase):
 class SendNotificationFormTest(TestCase):
 
     def setUp(self):
-        self.client = Client(enforce_csrf_checks=True)
-        self.client.request()
-        self.client_csrf = Client()
-        self.super_user = User.objects.create_superuser(username='super_user',
-                                                        password='test_case_for_super_user',
-                                                        email='super_user@localhost')
-        self.super_user.save()
-        self.general_user = User.objects.create_user(username='general_user',
-                                                     password='test_case_for_general_user')
-        self.general_user.save()
-        self.parameter = {
-            'target': '0',
-            'title': 'test title',
-            'subtitle': '',
-            'body': '',
-            'device_token': '1',
-            'sound': 'default',
-            'badge': '1',
-            'content_available': False,
-            'mutable_content': False,
-            'extra': ''
-        }
-        self.query_dict = QueryDict('', mutable=True)
-        self.query_dict.update(self.parameter)
-        self.device_token = DeviceToken(device_token='8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76',
-                                        uuid='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-                                        use_sandbox=True)
-        self.device_token.save()
+        pass
 
     def tearDown(self):
-        self.client = None
-        self.client_csrf = None
-        self.super_user.delete()
-        self.general_user.delete()
-        self.device_token.delete()
-
-    def test_method_get_without_parameter_by_superuser(self):
-        self.client.login(username=self.super_user.username, password='test_case_for_super_user')
-        response = self.client.get('/send_form')
-        self.assertEqual(response.status_code, 200)
-
-    def test_method_get_without_parameter_by_general_user(self):
-        self.client.login(username=self.general_user.username, password='test_case_for_general_user')
-        response = self.client.get('/send_form')
-        self.assertEqual(response.status_code, 302)
-
-    def test_method_get_with_parameter_by_superuser(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        request.user = self.super_user
-        request.GET['target'] = 0
-
-        response = send_notification_form(request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_method_post_without_parameter_by_superuser(self):
-        self.client_csrf._login(user=self.super_user)
-        response = self.client_csrf.post('/send_form')
-        self.assertEqual(response.status_code, 302)
-
-    def test_method_post_without_parameter_by_general_user(self):
-        self.client_csrf._login(user=self.general_user)
-        response = self.client_csrf.post('/send_form')
-        self.assertEqual(response.status_code, 302)
-
-    def test_method_post_without_csrf(self):
-        self.client._login(user=self.super_user)
-        response = self.client.post('/send_form')
-        self.assertEqual(response.status_code, 403)
-
-    def test_method_post_with_parameter_by_superuser(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.user = self.super_user
-        request.POST = self.query_dict
-
-        response = send_notification_form(request, execute=False)
-        self.assertEqual(response.status_code, 302)
+        pass
