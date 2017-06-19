@@ -101,8 +101,7 @@ def send_notification_form(request):
         form = NotificationSendForm(request.POST)
         if form.is_valid():
             target = request.POST['target']
-            device_tokens = list(map(lambda token_id: DeviceToken.objects.get(id=token_id).device_token,
-                                     request.POST.getlist('device_token')))
+            device_tokens = request.POST.getlist('device_token')
             title = request.POST['title']
             subtitle = request.POST['subtitle'] or None
             body = request.POST['body'] or None
