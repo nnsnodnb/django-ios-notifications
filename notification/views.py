@@ -1,4 +1,3 @@
-from django import forms
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -109,11 +108,4 @@ def send_notification_form(request):
 
     else:
         form = NotificationSendForm()
-        if 'target' in request.GET:
-            form.fields['target'].initial = int(request.GET['target'])
-            device_tokens = DeviceToken.objects.filter(use_sandbox=(not int(request.GET['target'])))\
-                .values_list('device_token', flat=True)
-            if device_tokens.count() == 0:
-                form.fields['device_token'].widget = forms.HiddenInput()
-            form.fields['device_token'].queryset = device_tokens
         return render(request, 'send_form.html', {'form': form})
