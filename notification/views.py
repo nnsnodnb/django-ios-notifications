@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .forms import CertFileUploadForm, NotificationSendForm
