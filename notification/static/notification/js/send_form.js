@@ -2,10 +2,6 @@ $(function() {
     $('#id_target').attr('onClick', 'change_target()');
     $('#id_target').attr('name', 'target');
 
-    if ($('#id_device_token').prop('type') === 'hidden') {
-        $('.input-device-token').css('display', 'none');
-    }
-
     if (sessionStorage.getItem(['send_title'])) {
         $('#id_title').prop('value', sessionStorage.getItem(['send_title']));
         sessionStorage.removeItem(['send_title']);
