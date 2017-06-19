@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .forms import CertFileUploadForm, NotificationSendForm
+from .forms import CertFileUploadForm
 from .models import DeviceToken
 from .utils import send_notification, upload_certificate
 
@@ -92,20 +92,3 @@ def cert_upload(request):
     else:
         form = CertFileUploadForm()
         return render(request, 'upload.html', {'form': form})
-
-
-def send_notification_form(request):
-    if not request.user.is_superuser:
-        return redirect('notification:login')
-
-    if request.method == 'POST':
-        form = NotificationSendForm(request.POST)
-        if form.is_valid():
-            return render(request, 'send_form.html')
-
-        else:
-            render(request, 'send_form.html')
-
-    else:
-        form = NotificationSendForm()
-        return render(request, 'send_form.html', {'form': form})

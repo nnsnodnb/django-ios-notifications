@@ -9,6 +9,10 @@ class CertFileUploadForm(forms.Form):
 
 class NotificationSendForm(forms.Form):
 
+    def __init__(self):
+        self.device_tokens = DeviceToken.objects.all()
+        
+
     target = forms.ChoiceField(choices=((0, 'Develop'), (1, 'Distribute')), required=True, widget=forms.RadioSelect)
     title = forms.CharField(required=True)
     subtitle = forms.CharField()
