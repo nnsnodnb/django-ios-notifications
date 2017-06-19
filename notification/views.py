@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .forms import CertFileUploadForm
+from .form import CertFileUploadForm
 from .models import DeviceToken
 from .utils import send_notification, upload_certificate
 

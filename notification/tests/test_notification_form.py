@@ -1,6 +1,6 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from unittest import TestCase
-from ..forms import CertFileUploadForm
+from ..form import CertFileUploadForm
 
 import os
 
