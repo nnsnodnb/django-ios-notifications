@@ -18,13 +18,3 @@ script:
 after_success:
   - coverage report
   - coveralls
-deploy:
-  provider: pypi
-  user: nnsnodnb
-  password:
-    secure: KUYph32t7nTkF1wZxnpIjG9FsQnnWkomM1gLi1GFC3TbRWQEKu7HzvhXvh8Vm7XsUFTih56wyAEflJD8zCgNDpzC2FazUOsjjXFsma1JX4auXRUKSqTOGdcc8jKCnbX4FF7bY9v8QdLMgjm6JOpgNFTCY89LgYTvuFBEY1CnLEmS0SLsboB1ublVjzbPVnIRZDvjnTehBm8zzYN3pNEecGvJ0Gs2AfW5cZJk7HVe/SarkWP5Kdv7FGEvjJnGm8JUOyIShcYUpYX2u7jIW+pfSQcmG+RKKdqY0qeseeZfX0jXbA1RRQWNR5L1H/NGfRCfP5OSVW5Q/7ZIsA9DCpruGpOiZgnZjLlmcOHpAfZW/f+9JxMdqTMK3ZTZdPrWQGuy/LOozrtmqCJSvEyJglhcqpLmikjk4Xfho13SPXgj+O+8ItPVoxEkn0ADHRHWgeCkos5Pr8V0Evf6zqRA2L9ZnUFrHVFm4DnGP+4KYFVLaLpBkFr8Twd/BLwo47nIxCqjjxHYqBmHQKGC4J7pRmKeT9HvYSfWSApbyRMWJOE1BxC9jgoO+NyO96KJU4awFhPFc/3bTWnVoxrkstE4QVi5WijuW9wVVKuS20r1TRCpqvtBpF/wSlE73WM9CYvZGMOxC5W7z5fXVXQPlpXngYdOUeOSOLI7Ia14NABFEknnMh4=
-  on:
-    branch: master
-    distributions: sdist bdist_wheel --universal
-  allow_failure: false
-
