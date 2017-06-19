@@ -5,7 +5,7 @@ from django.test import Client
 from django.test.client import RequestFactory
 from unittest import TestCase
 from ..models import DeviceToken
-from ..views import device_token_receive, send_notification_with_device_token, cert_upload, send_notification_form
+from ..views import device_token_receive, send_notification_with_device_token, cert_upload
 
 import json
 import os
@@ -405,12 +405,3 @@ class CertUploadTest(TestCase):
 
         response = cert_upload(request)
         self.assertEqual(response.status_code, 400)
-
-
-class SendNotificationFormTest(TestCase):
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
