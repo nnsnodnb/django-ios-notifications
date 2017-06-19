@@ -4,7 +4,6 @@ from ..utils import send_notification, upload_certificate, UPLOAD_DIR
 from ..models import CertFile
 
 import os
-import sys
 
 
 class UtilsSendNotificationTest(TestCase):
@@ -24,13 +23,13 @@ class UtilsSendNotificationTest(TestCase):
             os.remove(UPLOAD_DIR + '/test.pem')
 
     def test_use_sandbox_notification(self):
-        if sys.version_info.major == 3:
+        try:
             # python3
             with self.assertRaises(FileNotFoundError):
                 send_notification(message='test case',
                                   device_tokens=[self.device_token_hex],
                                   use_sandbox=True)
-        else:
+        except:
             # python2
             with self.assertRaises(IOError):
                 send_notification(message='test case',
