@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-{% load staticfiles %}
 
 {% block title %}Upload certificate files{% endblock title %}
 
 {% block content %}
-
-<script src="{% static 'notification/js/jquery.min.js' %}"></script>
-<script src="{% static 'notification/js/form_ajax.js' %}"></script>
 
 {% csrf_token %}
 {{ form.as_p }}
