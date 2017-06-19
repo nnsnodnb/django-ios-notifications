@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 from .forms import CertFileUploadForm, NotificationSendForm
 from .models import DeviceToken
 from .utils import send_notification, upload_certificate
@@ -12,8 +11,10 @@ import json
 
 
 @csrf_exempt
-@require_http_methods(['PUT'])
 def device_token_receive(request):
+    if request.method != 'PUT':
+        return HttpResponse(status=405)
+
     if request.body is b'':
         return JsonResponse({'error': 'Bad Request'}, status=400)
 
@@ -51,7 +52,6 @@ def device_token_receive(request):
 
 
 @login_required(login_url='/login')
-@require_http_methods(['GET'])
 @user_passes_test(lambda user: user.is_superuser)
 def send_notification_with_device_token(request, mode, device_token, execute=True):
     # mode: 0 or 1
@@ -79,7 +79,6 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
 
 
 @login_required(login_url='/login')
-@require_http_methods(['GET', 'POST'])
 @user_passes_test(lambda user: user.is_superuser)
 def cert_upload(request):
     if request.method == 'POST':
@@ -96,7 +95,6 @@ def cert_upload(request):
 
 
 @login_required(login_url='/login')
-@require_http_methods(['GET', 'POST'])
 @user_passes_test(lambda user: user.is_superuser)
 def send_notification_form(request):
     if request.method == 'POST':
