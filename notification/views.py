@@ -120,14 +120,9 @@ def send_notification_form(request):
         form = NotificationSendForm()
         if 'target' in request.GET:
             form.fields['target'].initial = int(request.GET['target'])
-            device_tokens = DeviceToken.objects.filter(use_sandbox=(not int(request.GET['target'])))
+            device_tokens = DeviceToken.objects.filter(use_sandbox=(not int(request.GET['target'])))\
+                .values_list('device_token', flat=True)
             if device_tokens.count() == 0:
                 form.fields['device_token'].widget = forms.HiddenInput()
-            form.fields['device_token'].choices = lambda: ((token.id, token.device_token) for token in device_tokens)
-        else:
-            form.fields['target'].initial = 0
-            device_tokens = DeviceToken.objects.filter(use_sandbox=True)
-            if device_tokens.count() == 0:
-                form.fields['device_token'].widget = forms.HiddenInput()
-            form.fields['device_token'].choices = lambda: ((token.id, token.device_token) for token in device_tokens)
+            form.fields['device_token'].queryset = device_tokens
         return render(request, 'send_form.html', {'form': form})
