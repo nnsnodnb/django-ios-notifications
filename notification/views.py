@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_http_methods
 from .apns.apns import PayloadAlert
 from .forms import CertFileUploadForm, NotificationSendForm
 from .models import DeviceToken
@@ -56,7 +56,7 @@ def device_token_receive(request):
 
 
 @login_required(login_url='/login')
-@require_GET
+@require_http_methods(['GET'])
 @user_passes_test(lambda user: user.is_superuser)
 def send_notification_with_device_token(request, mode, device_token, execute=True):
     # mode: 0 or 1
