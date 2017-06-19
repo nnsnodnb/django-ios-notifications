@@ -6,7 +6,7 @@
 {% block content %}
 
 <script src="{% static 'notification/js/jquery.min.js' %}"></script>
-<script src="{% static 'notification/js/send_form.js' %}"></script>
+<script src="{% static 'notification/js/form_ajax.js' %}"></script>
 
 {% csrf_token %}
 {{ form.as_p }}
