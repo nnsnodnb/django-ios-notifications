@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest, QueryDict
@@ -330,13 +329,11 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_execute_send_notification_is_super_user(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        request.user = self.super_user
-        response = send_notification_with_device_token(request,
+        self.request.user = self.super_user
+        response = send_notification_with_device_token(self.request,
                                                        mode=0,
                                                        device_token=self.device_token_hex.encode(),
-                                                       execute=False)
+                                                       execute=True)
         self.assertEqual(response.status_code, 200)
 
 
@@ -424,16 +421,12 @@ class SendNotificationFormTest(TestCase):
         self.general_user = User.objects.create_user(username='general_user',
                                                      password='test_case_for_general_user')
         self.general_user.save()
-        self.device_token = DeviceToken(device_token='8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76',
-                                        uuid='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-                                        use_sandbox=True)
-        self.device_token.save()
         self.parameter = {
             'target': '0',
             'title': 'test title',
             'subtitle': '',
             'body': '',
-            'device_token': str(self.device_token.id),
+            'device_token': '1',
             'sound': 'default',
             'badge': '1',
             'content_available': False,
@@ -442,7 +435,10 @@ class SendNotificationFormTest(TestCase):
         }
         self.query_dict = QueryDict('', mutable=True)
         self.query_dict.update(self.parameter)
-
+        self.device_token = DeviceToken(device_token='8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e76',
+                                        uuid='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+                                        use_sandbox=True)
+        self.device_token.save()
         self.python_version = sys.version_info
 
     def tearDown(self):

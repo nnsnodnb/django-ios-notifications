@@ -173,5 +173,5 @@ def send_notification_form(request, execute=True):
         device_tokens = DeviceToken.objects.filter(use_sandbox=use_sandbox)
         if device_tokens.count() == 0:
             form.fields['device_token'].widget = forms.HiddenInput()
-        form.fields['device_token'].choices = list(map(lambda token: (token.id, token.device_token), device_tokens))
+        form.fields['device_token'].choices = lambda: ((token.id, token.device_token) for token in device_tokens)
         return render(request, 'send_form.html', {'form': form})

@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'src'))
 DEBUG = True
 
 ADMINS = (
-    ('admin', 'admin@localhost'),
+    ('admin', 'admin@location'),
 )
 
 MANAGERS = ADMINS
@@ -18,7 +18,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'test_db.sqlite3'),
+        'NAME': 'test_db.sqlite3',
     }
 }
 
@@ -28,7 +28,7 @@ LANGUAGE_CODE = 'en-us'
 USE_I18N = True
 USE_L10N = True
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = 'tests.url'
 
 SITE_ID = 1
 
