@@ -22,7 +22,8 @@ class NotificationViewDeviceTokenReceiveTest(TestCase):
 
     def test_device_token_receive_with_all_parameter(self):
         parameter = {'device_token': self.device_token,
-                     'uuid': self.uuid}
+                     'uuid': self.uuid,
+                     'sandbox': True}
         request = self.factory.put('/receive/',
                                    json.dumps(parameter))
         request.content_type = 'application/json'
@@ -52,6 +53,16 @@ class NotificationViewDeviceTokenReceiveTest(TestCase):
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'error': 'Bad Request'})
 
+    def test_device_token_receive_with_only_sandbox(self):
+        parameter = {'sandbox': True}
+        request = self.factory.put('/receive/',
+                                   json.dumps(parameter))
+        request.content_type = 'application/json'
+        response = device_token_receive(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {'error': 'Bad Request'})
+
     def test_device_token_receive_without_parameter(self):
         request = self.factory.put('/receive/')
         response = device_token_receive(request)
@@ -66,7 +77,8 @@ class NotificationViewDeviceTokenReceiveTest(TestCase):
         device_token.save()
 
         parameter = {'device_token': 'ec203ae05072eaa39474fd4bd06c3b36344602295078615cef67fcbdb7e94aef',
-                     'uuid': 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}
+                     'uuid': 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+                     'sandbox': True}
         request = self.factory.put('/receive/',
                                    json.dumps(parameter))
         request.content_type = 'application/json'
