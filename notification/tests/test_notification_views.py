@@ -7,6 +7,7 @@ from unittest import TestCase
 from ..models import DeviceToken
 from ..views import device_token_receive, send_notification_with_device_token, cert_upload
 
+import django
 import json
 import os
 
@@ -196,9 +197,10 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         Request by super user.
         """
         self.request.user = self.super_user
+        token = self.device_token_hex.encode() if django.get_version() < '2.0' else self.device_token_hex
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.device_token_hex.encode(),
+                                                       device_token=token,
                                                        execute=False)
         self.assertEqual(response.status_code, 200)
 
@@ -280,9 +282,10 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         Request by super user.
         """
         self.request.user = self.super_user
+        token = self.device_token_hex.encode() if django.get_version() < '2.0' else self.device_token_hex
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
-                                                       device_token=self.device_token_hex.encode(),
+                                                       device_token=token,
                                                        execute=False)
         self.assertEqual(response.status_code, 200)
 
