@@ -33,7 +33,7 @@ Supported python versions
 Supported django versions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1.7 - 1.11
+1.7 - 1.11, 2.0 (Only Python3.x or later)
 
 Installation
 ------------
