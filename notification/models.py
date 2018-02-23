@@ -14,7 +14,7 @@ class DeviceToken(models.Model):
         verbose_name_plural = 'Device Token'
 
     def __str__(self):
-        return device_token
+        return self.device_token
 
 
 class CertFile(models.Model):
@@ -28,4 +28,4 @@ class CertFile(models.Model):
         verbose_name_plural = 'Certificate file'
 
     def __str__(self):
-        return filename
+        return self.filename

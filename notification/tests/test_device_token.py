@@ -26,6 +26,7 @@ class DeviceTokenTestCase(TestCase):
         self.assertEqual(device_token.uuid, get_device_token.uuid)
         self.assertEqual(device_token.user, get_device_token.user)
         self.assertIsNone(get_device_token.user)
+        self.assertEqual(str(device_token), device_token.device_token)
 
     def test_one_device_token_with_user(self):
         device_token = DeviceToken()
