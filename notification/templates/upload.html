@@ -7,12 +7,12 @@
 {% if not error and not form %}
     <script>
         alert('Success upload');
-        location.href = '/cert_upload';
+        location.href = '{% url 'notification:cert_upload' %}';
     </script>
 {% elif error == 'wrong' and not form %}
     <script>
         alert('Please upload a file of the following format.\n \"***********.pem\"');
-        location.href = '/cert_upload';
+        location.href = '{% url 'notification:cert_upload' %}';
     </script>
 {% endif %}
 
