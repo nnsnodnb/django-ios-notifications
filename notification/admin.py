@@ -7,3 +7,10 @@ class DeviceTokenAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'device_token', 'uuid', 'user')
 
 admin.site.register(DeviceToken, DeviceTokenAdmin)
+
+
+class CertFileAdmin(admin.ModelAdmin):
+	list_display = ('id', 'filename', 'target_mode', 'is_use', 'date')
+	list_display_links = ('id', 'filename', 'target_mode')
+
+admin.site.register(CertFile, CertFileAdmin)
