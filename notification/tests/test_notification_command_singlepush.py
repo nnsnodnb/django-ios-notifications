@@ -1,6 +1,11 @@
 from unittest import TestCase
 from django.core.management import call_command
-from notification.models import DeviceToken
+from notification.models import DeviceToken, CertFile
+
+import json
+import sys
+
+PYTHON_VERSION = sys.version_info
 
 
 class ManagementCommandsSinglePushTest(TestCase):
@@ -47,26 +52,28 @@ class ManagementCommandsSinglePushTest(TestCase):
         self.device_token.delete()
 
     def test_without_device_token_and_title(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ValueError):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_with_device_token_and_title(self):
         self.options['sandbox'] = True
         self.options['device_token'] = self.device_token.device_token
         self.options['title'] = 'test case title'
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(CertFile.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_with_device_token_without_title(self):
         self.options['device_token'] = self.device_token.device_token
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(ValueError):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_target_develop_with_device_token_and_title_without_cert(self):
         self.options['sandbox'] = True
         self.options['device_token'] = self.device_token.device_token
         self.options['title'] = 'test case title'
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(CertFile.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_valid_custom(self):
@@ -74,7 +81,8 @@ class ManagementCommandsSinglePushTest(TestCase):
         self.options['sandbox'] = True
         self.options['device_token'] = self.device_token.device_token
         self.options['title'] = 'test case title'
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(CertFile.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_invalid_custom(self):
@@ -82,12 +90,18 @@ class ManagementCommandsSinglePushTest(TestCase):
         self.options['sandbox'] = True
         self.options['device_token'] = self.device_token.device_token
         self.options['title'] = 'test case title'
-        with self.assertRaises(SystemExit):
-            call_command(self.command_name, *self.args, **self.options)
+
+        if PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor >= 5:
+            with self.assertRaises(json.decoder.JSONDecodeError):
+                call_command(self.command_name, *self.args, **self.options)
+        elif (PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 4) or PYTHON_VERSION.major == 2:
+            with self.assertRaises(ValueError):
+                call_command(self.command_name, *self.args, **self.options)
 
     def test_not_match_device_token(self):
         self.options['sandbox'] = True
         self.options['device_token'] = '8a0d7cba3ffad34bd3dcb37728080a95d6ee78a83a68ead033614acbab9b7e75'
         self.options['title'] = 'test case title'
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(DeviceToken.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
