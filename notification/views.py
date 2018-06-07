@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .forms import CertFileUploadForm
-from .models import DeviceToken
+from .models import DeviceToken, CertFile
 from .utils import send_notification, upload_certificate
 
 import json
@@ -73,8 +73,10 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
                           device_token=device_token.device_token,
                           use_sandbox=True if int(mode) == 0 else False)
         return HttpResponse('Successful sending.', status=200)
-    except:
+    except DeviceToken.DoesNotExist:
         return HttpResponse('Not found. Your device token.', status=404)
+    except CertFile.DoesNotExist:
+        return HttpResponse('Not found. Your certificate file', status=400)
 
 
 def cert_upload(request):
