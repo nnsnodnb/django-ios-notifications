@@ -10,6 +10,9 @@ from ..views import device_token_receive, send_notification_with_device_token, c
 import django
 import json
 import os
+import sys
+
+PYTHON_VERSION = sys.version_info
 
 
 class NotificationViewDeviceTokenReceiveTest(TestCase):
@@ -339,11 +342,18 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
                                                            execute=True)
             self.assertEqual(response.status_code, 404)
         else:
-            with self.assertRaises(FileNotFoundError):
-                _ = send_notification_with_device_token(self.request,
-                                                        mode=0,
-                                                        device_token=self.device_token_hex.encode(),
-                                                        execute=True)
+            if PYTHON_VERSION.major == 2 and PYTHON_VERSION.minor == 7:
+                with self.assertRaises(IOError):
+                    _ = send_notification_with_device_token(self.request,
+                                                            mode=0,
+                                                            device_token=self.device_token_hex.encode(),
+                                                            execute=True)
+            else:
+                with self.assertRaises(FileNotFoundError):
+                    _ = send_notification_with_device_token(self.request,
+                                                            mode=0,
+                                                            device_token=self.device_token_hex.encode(),
+                                                            execute=True)
 
 
 class CertUploadTest(TestCase):

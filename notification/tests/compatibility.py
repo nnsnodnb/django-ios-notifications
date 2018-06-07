@@ -3,6 +3,11 @@ try:
 except ImportError:
     from mock import MagicMock, PropertyMock, patch
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
 
 from django.conf import settings
 try:
