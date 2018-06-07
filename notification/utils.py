@@ -2,8 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .apns.apns import APNs, Payload
 from .models import CertFile
 
-
 import os
+import os.path
 
 UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/files/'
 
@@ -24,7 +24,7 @@ def send_notification(message, device_token, use_sandbox=True):
 
 
 def upload_certificate(cert_file, target_mode):
-    if not cert_file.name.endswith('.pem'):
+    if os.path.splitext(cert_file.name)[1] != '.pem':
         return {'error': 'wrong'}
 
     cert_files = CertFile.objects.filter(target_mode=target_mode, is_use=True)
