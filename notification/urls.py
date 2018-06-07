@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.views import login, logout
-from .views import *
+from .views import device_token_receive, send_notification_with_device_token, cert_upload
 
 
 app_name = 'notification'
