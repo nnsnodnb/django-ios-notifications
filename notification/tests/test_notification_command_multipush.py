@@ -2,6 +2,11 @@ from unittest import TestCase
 from django.core.management import call_command
 from notification.models import DeviceToken, CertFile
 
+import json
+import sys
+
+PYTHON_VERSION = sys.version_info
+
 
 class ManagementCommandsMultiPushTest(TestCase):
 
@@ -51,7 +56,7 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.device_token.delete()
 
     def test_without_device_tokens_and_title(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ValueError):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_with_device_token_for_specified_and_title(self):
@@ -59,12 +64,13 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.options['device_tokens'] = [self.device_token.device_token]
         self.options['title'] = 'test case title'
         CertFile.objects.all().delete()
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(CertFile.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_with_device_token_for_all_without_title(self):
         self.options['all'] = True
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(ValueError):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_target_develop_with_device_token_for_all_and_title_without_cert(self):
@@ -72,7 +78,8 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.options['all'] = True
         self.options['title'] = 'test case title'
         CertFile.objects.all().delete()
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(CertFile.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_valid_custom(self):
@@ -81,7 +88,8 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.options['all'] = True
         self.options['title'] = 'test case title'
         CertFile.objects.all().delete()
-        with self.assertRaises(SystemExit):
+
+        with self.assertRaises(CertFile.DoesNotExist):
             call_command(self.command_name, *self.args, **self.options)
 
     def test_invalid_custom(self):
@@ -90,5 +98,10 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.options['all'] = True
         self.options['title'] = 'test case title'
         CertFile.objects.all().delete()
-        with self.assertRaises(SystemExit):
-            call_command(self.command_name, *self.args, **self.options)
+
+        if PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor >= 5:
+            with self.assertRaises(json.decoder.JSONDecodeError):
+                call_command(self.command_name, *self.args, **self.options)
+        elif (PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 4) or PYTHON_VERSION.major == 2:
+            with self.assertRaises(ValueError):
+                call_command(self.command_name, *self.args, **self.options)

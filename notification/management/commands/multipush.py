@@ -1,10 +1,8 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from notification.apns.apns import APNs, Payload, PayloadAlert
 from notification.models import DeviceToken, CertFile
 
 import json
-import logging
 import os.path
 import sys
 
@@ -108,60 +106,34 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        error = False
         if options['device_tokens'] is None and not options['all']:
-            try:
-                raise ValueError('Please specify a device tokens (-t or --token)')
-            except ValueError as e:
-                error = True
-                logging.error(e)
+            raise ValueError('Please specify a device tokens (-t or --token)')
 
         if options['title'] is None:
-            try:
-                raise ValueError('Please input title in push notification (--title)')
-            except ValueError as e:
-                error = True
-                logging.error(e)
-
-        if error:
-            sys.exit()
+            raise ValueError('Please input title in push notification (--title)')
 
         custom = None
         if options['extra'] is not None:
             extra = options['extra'].replace('\'', '\"')
-            if PYTHON_VERSION.major >= 3 and PYTHON_VERSION.minor >= 5:
-                try:
-                    custom = json.loads(extra)
-                except json.decoder.JSONDecodeError as e:
-                    sys.exit(logging.error(e))
-            elif PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 4:
-                try:
-                    custom = json.loads(extra)
-                except ValueError as e:
-                    sys.exit(logging.error(e))
-            elif PYTHON_VERSION.major == 2:
-                try:
-                    custom = json.loads(extra)
-                except ValueError as e:
-                    sys.exit(logging.error(e))
+            custom = json.loads(extra)
 
         if options['all']:
             device_tokens = [token.device_token for token in DeviceToken.objects.filter(use_sandbox=options['sandbox'])]
         else:
-            device_tokens = list(filter(lambda token:
-                                        DeviceToken.objects.filter(device_token=token,
-                                                                   use_sandbox=options['sandbox']).count() > 0,
-                                        options['device_tokens']))
-            _ = list(map(lambda item:
-                         logging.warning('There is no match for the specified device token: {}'.format(item)),
-                         list(set(options['device_tokens']) - set(device_tokens))))
+            device_tokens = []
+            for token in options['device_tokens']:
+                device_token = DeviceToken.objects.filter(device_token=token, use_sandbox=options['sandbox'])
+                if device_token.count() > 0:
+                    device_tokens.extend(device_token)
+                    continue
 
-        try:
-            cert_file = CertFile.objects.get(target_mode=int(not options['sandbox']), is_use=True)
-        except ObjectDoesNotExist:
-            sys.exit(logging.error('Certificate file has not been uploaded'))
+            for item in list(set(options['device_tokens']) - set(device_tokens)):
+                print('There is no match for the specified device token: {}'.format(item))
 
-        apns = APNs(use_sandbox=options['sandbox'], cert_file=CERT_FILE_UPLOAD_DIR + cert_file.filename, enhanced=True)
+        cert_file = CertFile.objects.get(target_mode=int(not options['sandbox']), is_use=True)
+
+        apns = APNs(use_sandbox=options['sandbox'], cert_file=os.path.join(CERT_FILE_UPLOAD_DIR, cert_file.filename),
+                    enhanced=True)
 
         payload_alert = PayloadAlert(title=options['title'], subtitle=options['subtitle'], body=options['body'])
         payload = Payload(alert=payload_alert if payload_alert.body is not None else payload_alert.title,
