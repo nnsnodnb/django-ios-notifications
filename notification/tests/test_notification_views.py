@@ -339,7 +339,7 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
                                                        mode=0,
                                                        device_token=self.device_token_hex.encode(),
                                                        execute=True)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
 
 class CertUploadTest(TestCase):
