@@ -337,7 +337,7 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
 
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
-                                                       device_token=self.device_token_hex.encode(),
+                                                       device_token=self.device_token.device_token,
                                                        execute=True)
         self.assertEqual(response.status_code, 200)
 
