@@ -75,8 +75,6 @@ def send_notification_with_device_token(request, mode, device_token, execute=Tru
         return HttpResponse('Successful sending.', status=200)
     except DeviceToken.DoesNotExist:
         return HttpResponse('Not found. Your device token.', status=404)
-    except CertFile.DoesNotExist:
-        return HttpResponse('Not found. Your certificate file', status=400)
 
 
 def cert_upload(request):

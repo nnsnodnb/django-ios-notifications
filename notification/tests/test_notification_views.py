@@ -4,12 +4,14 @@ from django.http import HttpRequest
 from django.test import Client
 from django.test.client import RequestFactory
 from unittest import TestCase
+from .compatibility import Mock
 from ..models import DeviceToken
 from ..views import device_token_receive, send_notification_with_device_token, cert_upload
 
 import django
 import json
 import os
+import notification.apns.apns
 import sys
 
 PYTHON_VERSION = sys.version_info
@@ -201,6 +203,7 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         """
         self.request.user = self.super_user
         token = self.device_token_hex.encode() if django.get_version() < '2.0' else self.device_token_hex
+        notification.apns.apns.GatewayConnection.send_notification = Mock(return_value=None)
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
                                                        device_token=token,
@@ -286,6 +289,7 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         """
         self.request.user = self.super_user
         token = self.device_token_hex.encode() if django.get_version() < '2.0' else self.device_token_hex
+        notification.apns.apns.GatewayConnection.send_notification = Mock(return_value=None)
         response = send_notification_with_device_token(self.request,
                                                        mode=1,
                                                        device_token=token,
@@ -329,16 +333,18 @@ class NotificationViewsSendNotificationWithDeviceTokenTest(TestCase):
         request.user = self.super_user
         request.GET['message'] = 'test case'
 
+        notification.apns.apns.GatewayConnection.send_notification = Mock(return_value=None)
         response = send_notification_with_device_token(request, 0, self.device_token_hex, execute=False)
         self.assertEqual(response.status_code, 200)
 
     def test_execute_send_notification_is_super_user(self):
         self.request.user = self.super_user
-
+        notification.apns.apns.GatewayConnection.send_notification = Mock(return_value=None)
         response = send_notification_with_device_token(self.request,
                                                        mode=0,
                                                        device_token=self.device_token.device_token,
                                                        execute=True)
+
         self.assertEqual(response.status_code, 200)
 
 
