@@ -1,8 +1,10 @@
-from unittest import TestCase
 from django.core.management import call_command
 from notification.models import DeviceToken, CertFile
+from unittest import TestCase
+from .compatibility import Mock
 
 import json
+import notification.apns.apns
 import sys
 
 PYTHON_VERSION = sys.version_info
@@ -63,9 +65,9 @@ class ManagementCommandsMultiPushTest(TestCase):
         self.options['sandbox'] = True
         self.options['device_tokens'] = [self.device_token.device_token]
         self.options['title'] = 'test case title'
-        CertFile.objects.all().delete()
-        with self.assertRaises(CertFile.DoesNotExist):
-            call_command(self.command_name, *self.args, **self.options)
+
+        notification.apns.apns.GatewayConnection.send_notification = Mock(return_value=None)
+        call_command(self.command_name, *self.args, **self.options)
 
     def test_with_device_token_for_all_without_title(self):
         self.options['all'] = True

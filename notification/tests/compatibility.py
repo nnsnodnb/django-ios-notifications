@@ -1,7 +1,7 @@
 try:
-    from unittest.mock import MagicMock, PropertyMock, patch
+    from unittest.mock import Mock, MagicMock, PropertyMock, patch
 except ImportError:
-    from mock import MagicMock, PropertyMock, patch
+    from mock import Mock, MagicMock, PropertyMock, patch
 
 try:
     FileNotFoundError
