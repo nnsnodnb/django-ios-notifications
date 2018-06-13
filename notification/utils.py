@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
+from OpenSSL import crypto
 from .apns.apns import APNs, Payload
 from .models import CertFile
 
@@ -35,10 +37,14 @@ def upload_certificate(cert_file, target_mode):
         if os.path.isfile(UPLOAD_DIR + current_file.filename):
             os.remove(UPLOAD_DIR + current_file.filename)
 
-    destination = open(UPLOAD_DIR + cert_file.name, 'wb+')
+    destination = open(os.path.join(UPLOAD_DIR, cert_file.name), 'wb+')
     for chunk in cert_file.chunks():
         destination.write(chunk)
     destination.close()
+
+    pem_file = open(os.path.join(UPLOAD_DIR, cert_file.name), 'rb').read()
+    cert = crypto.load_certificate(crypto.FILETYPE_PEM, pem_file)
+    expire_date = datetime.strptime(cert.get_notAfter().decode('utf-8'), "%Y%m%d%H%M%SZ")
 
     CertFile(filename=cert_file.name, target_mode=target_mode, is_use=True).save()
 
