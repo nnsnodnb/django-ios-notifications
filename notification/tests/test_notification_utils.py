@@ -1,9 +1,12 @@
 from unittest import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
+from OpenSSL.crypto import X509
+from .compatibility import Mock
 from ..utils import send_notification, upload_certificate, UPLOAD_DIR
 from ..models import CertFile
 
 import os
+import OpenSSL.crypto
 import sys
 
 
@@ -24,6 +27,9 @@ class UtilsSendNotificationTest(TestCase):
             os.remove(UPLOAD_DIR + '/test.pem')
 
     def test_use_sandbox_notification(self):
+        x509 = X509()
+        x509.set_notAfter(b'20190224062542Z')
+        OpenSSL.crypto.load_certificate = Mock(return_value=x509)
         if sys.version_info.major == 3:
             # python3
             self.assertIsNone(send_notification(message='test case',
