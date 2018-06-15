@@ -46,6 +46,6 @@ def upload_certificate(cert_file, target_mode):
     cert = crypto.load_certificate(crypto.FILETYPE_PEM, pem_file)
     expire_date = datetime.strptime(cert.get_notAfter().decode('utf-8'), "%Y%m%d%H%M%SZ")
 
-    CertFile(filename=cert_file.name, target_mode=target_mode, is_use=True).save()
+    CertFile(filename=cert_file.name, target_mode=target_mode, is_use=True, expire_date=expire_date).save()
 
     return {'error': None}
