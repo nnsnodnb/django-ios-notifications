@@ -21,7 +21,8 @@ class CertFile(models.Model):
     filename = models.CharField(blank=False, default='cert.pem', max_length=100)
     target_mode = models.IntegerField(blank=False, default=0)
     is_use = models.BooleanField(blank=False, default=True)
-    date = models.DateTimeField(blank=False, default=now)
+    expire_date = models.DateTimeField(blank=False, default=now)
+    upload_date = models.DateTimeField(blank=False, default=now)
 
     class Meta:
         verbose_name = 'Certificate files'

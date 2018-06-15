@@ -11,8 +11,8 @@ admin.site.register(DeviceToken, DeviceTokenAdmin)
 
 
 class CertFileAdmin(admin.ModelAdmin):
-    readonly_fields = ('filename', 'target_mode', 'is_use', 'date')
-    list_display = ('id', 'filename', 'target_mode', 'is_use', 'date')
+    readonly_fields = ('filename', 'target_mode', 'is_use', 'expire_date', 'upload_date')
+    list_display = ('id', 'filename', 'target_mode', 'is_use', 'expire_date', 'upload_date')
     list_display_links = ('id', 'filename', 'target_mode')
 
 
