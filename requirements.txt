@@ -1,7 +1,7 @@
 appdirs==1.4.3
 asn1crypto==0.24.0
 cffi==1.11.5
-cryptography==2.2.2
+cryptography==2.3
 dateutils==0.6.6
 idna==2.7
 mock==2.0.0
